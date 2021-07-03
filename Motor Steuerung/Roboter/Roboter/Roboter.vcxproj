@@ -76,16 +76,55 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="src\Lidar\Lidar.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Roboter\Roboter.cpp" />
     <ClCompile Include="src\utility\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Lidar\Lidar.h" />
     <ClInclude Include="src\Roboter\Roboter.h" />
     <ClInclude Include="src\utility\Vector2.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-librplidar_sdk.a %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link />
+    <Link>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>%(LibraryDependencies)</LibraryDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>-"C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\librplidar_sdk.a"</AdditionalOptions>
+      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib_arm;%(Link.AdditionalLibraryDirectories);/home/pi/P5</AdditionalLibraryDirectories>
+      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
