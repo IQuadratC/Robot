@@ -85,7 +85,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\Led\LedStripe.cpp" />
-    <ClCompile Include="src\Led\lib\ws2812-rpi.cpp" />
     <ClCompile Include="src\Lidar\Lidar.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Roboter\Roboter.cpp" />
@@ -93,8 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Led\LedStripe.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi-defines.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi.h" />
     <ClInclude Include="src\Lidar\Lidar.h" />
     <ClInclude Include="src\Roboter\Roboter.h" />
     <ClInclude Include="src\utility\Vector2.h" />
