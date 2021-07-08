@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{02a0566c-4b1c-475d-aba6-503db88d739d}</ProjectGuid>
+    <ProjectGuid>{8981c466-d988-44e7-a2ed-a7a1260d9e0c}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>Roboter</RootNamespace>
+    <RootNamespace>Network</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -63,7 +63,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WSL_1_0</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -76,64 +75,12 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <RemoteCppCompileToolExe>sudo g++</RemoteCppCompileToolExe>
-    <RemoteCCompileToolExe>sudo g++</RemoteCCompileToolExe>
-  </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="src\Led\LedStripe.cpp" />
-    <ClCompile Include="src\Led\lib\ws2812-rpi.cpp" />
-    <ClCompile Include="src\Lidar\Lidar.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Roboter\Roboter.cpp" />
-    <ClCompile Include="src\utility\Vector2.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Led\LedStripe.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi-defines.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi.h" />
-    <ClInclude Include="src\Lidar\Lidar.h" />
-    <ClInclude Include="src\Roboter\Roboter.h" />
-    <ClInclude Include="src\utility\Vector2.h" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-librplidar_sdk.a %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <Link />
-    <Link>
-      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
-      <CppLanguageStandard>c++17</CppLanguageStandard>
-    </ClCompile>
-    <Link>
-      <LibraryDependencies>%(LibraryDependencies)</LibraryDependencies>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>-"C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\librplidar_sdk.a"</AdditionalOptions>
-      <AdditionalLibraryDirectories>$(SolutionDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <Link>
-      <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib_arm;%(Link.AdditionalLibraryDirectories);/home/pi/P5</AdditionalLibraryDirectories>
-      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
-    </Link>
-    <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <CppLanguageStandard>c++17</CppLanguageStandard>
-    </ClCompile>
-  </ItemDefinitionGroup>
+  <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

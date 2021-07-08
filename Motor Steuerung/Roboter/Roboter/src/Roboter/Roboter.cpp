@@ -8,83 +8,83 @@ int serial_port = 0; // Serial Port
 int maxSpeed = 5; // Maximal speed (kleiner gleich schneller(0-255))
 
 
-void moveRobot(float y, float x, int Speedprozent)
+void moveRobot(float y, float x, float Speed)
 {
-	if (Speedprozent != 0) {
+	if (Speed != 0) {
 
 		int Motor12_Steps = 0;
-		unsigned short Motor12_Delay = 0;
+		uint16_t Motor12_Delay = 0;
 
 		int Motor34_Steps = 0;
-		unsigned short Motor34_Delay = 0;
+		uint16_t Motor34_Delay = 0;
 
 		if (x >= 0 && y >= 0 && abs(y) >= abs(x))
 		{
 			Motor34_Steps = stepPerCM * y;
-			Motor34_Delay = Speedprozent;
+			Motor34_Delay = Speed;
 
 			Motor12_Steps = stepPerCM * (y - x);
-			Motor12_Delay = Speedprozent * ((y - x) / y);
+			Motor12_Delay = Speed * ((y - x) / y);
 		}
 		else if (x >= 0 && y >= 0 && abs(y) <= abs(x))
 		{
 
 			Motor34_Steps = stepPerCM * x;
-			Motor34_Delay = Speedprozent;
+			Motor34_Delay = Speed;
 
 			Motor12_Steps = -stepPerCM * (x - y);
-			Motor12_Delay = Speedprozent * ((x - y) / x);
+			Motor12_Delay = Speed * ((x - y) / x);
 		}
 		else if (x >= 0 && y <= 0 && abs(y) <= abs(x))
 		{
 
 			Motor12_Steps = -stepPerCM * x;
-			Motor12_Delay = Speedprozent;
+			Motor12_Delay = Speed;
 
 			Motor34_Steps = stepPerCM * (x + y);
-			Motor34_Delay = Speedprozent * ((x + y) / x);
+			Motor34_Delay = Speed * ((x + y) / x);
 		}
 		else if (x >= 0 && y <= 0 && abs(y) >= abs(x))
 		{
 
 			Motor12_Steps = stepPerCM * y;
-			Motor12_Delay = Speedprozent;
+			Motor12_Delay = Speed;
 
 			Motor34_Steps = stepPerCM * (y + x);
-			Motor34_Delay = Speedprozent * ((y + x) / y);
+			Motor34_Delay = Speed * ((y + x) / y);
 		}
 		else if (x <= 0 && y <= 0 && abs(y) >= abs(x))
 		{
 
 			Motor34_Steps = stepPerCM * y;
-			Motor34_Delay = Speedprozent;
+			Motor34_Delay = Speed;
 
 			Motor12_Steps = stepPerCM * (y - x);
-			Motor12_Delay = Speedprozent * ((y - x) / y);
+			Motor12_Delay = Speed * ((y - x) / y);
 		}
 		else if (x <= 0 && y <= 0 && abs(y) <= abs(x))
 		{
 			Motor34_Steps = stepPerCM * x;
-			Motor34_Delay = Speedprozent;
+			Motor34_Delay = Speed;
 
 			Motor12_Steps = -stepPerCM * (x - y);
-			Motor12_Delay = Speedprozent * ((x - y) / x);
+			Motor12_Delay = Speed * ((x - y) / x);
 		}
 		else if (x <= 0 && y >= 0 && abs(y) <= abs(x))
 		{
 			Motor12_Steps = -stepPerCM * x;
-			Motor12_Delay = Speedprozent;
+			Motor12_Delay = Speed;
 
 			Motor34_Steps = stepPerCM * (x + y);
-			Motor34_Delay = Speedprozent * ((x + y) / x);
+			Motor34_Delay = Speed * ((x + y) / x);
 		}
 		else if (x <= 0 && y >= 0 && abs(y) >= abs(x))
 		{
 			Motor12_Steps = stepPerCM * y;
-			Motor12_Delay = Speedprozent;
+			Motor12_Delay = Speed;
 
 			Motor34_Steps = stepPerCM * (y + x);
-			Motor34_Delay = Speedprozent * ((y + x) / y);
+			Motor34_Delay = Speed * ((y + x) / y);
 		}
 
 		int m1speed;
@@ -133,15 +133,15 @@ void moveRobot(float y, float x, int Speedprozent)
 		Motor12_Steps = abs(Motor12_Steps);
 		Motor34_Steps = abs(Motor34_Steps);
 
-		unsigned short m1_Steps = 0;
-		unsigned short m2_Steps = 0;
-		unsigned short m3_Steps = 0;
-		unsigned short m4_Steps = 0;
+		uint16_t m1_Steps = 0;
+		uint16_t m2_Steps = 0;
+		uint16_t m3_Steps = 0;
+		uint16_t m4_Steps = 0;
 
-		if (Motor12_Steps > std::numeric_limits<unsigned short>::max())
+		if (Motor12_Steps > std::numeric_limits<uint16_t>::max())
 		{
-			m1_Steps = std::numeric_limits<unsigned short>::max();
-			m2_Steps = std::numeric_limits<unsigned short>::max();
+			m1_Steps = std::numeric_limits<uint16_t>::max();
+			m2_Steps = std::numeric_limits<uint16_t>::max();
 		}
 		else
 		{
@@ -149,10 +149,10 @@ void moveRobot(float y, float x, int Speedprozent)
 			m2_Steps = Motor12_Steps;
 		}
 
-		if (Motor34_Steps > std::numeric_limits<unsigned short>::max())
+		if (Motor34_Steps > std::numeric_limits<uint16_t>::max())
 		{
-			m3_Steps = std::numeric_limits<unsigned short>::max();
-			m4_Steps = std::numeric_limits<unsigned short>::max();
+			m3_Steps = std::numeric_limits<uint16_t>::max();
+			m4_Steps = std::numeric_limits<uint16_t>::max();
 		}
 		else
 		{
@@ -160,7 +160,7 @@ void moveRobot(float y, float x, int Speedprozent)
 			m4_Steps = Motor34_Steps;
 		}
 
-		unsigned char senddata[15];
+		uint8_t senddata[15];
 
 		memset(senddata, 0, 15);
 
@@ -191,7 +191,7 @@ void moveRobot(float y, float x, int Speedprozent)
 	}
 	else {
 
-		unsigned char senddata[15];
+		uint8_t senddata[15];
 		memset(senddata, 0, 15);
 		senddata[0] = 0x3C;
 		senddata[14] = 0x3E;
@@ -260,10 +260,11 @@ void rotateRobot(int a, int Speedprozent)
 
 void roboterTest()
 {
-	unsigned short m1 = 3600;
-	unsigned short m2 = 3600;
-	unsigned short m3 = 3600;
-	unsigned short m4 = 3600;
+	unsigned short m1 = 3200;
+	unsigned short m2 = 3200;
+	unsigned short m3 = 3200;
+	unsigned short m4 = 3200;
+
 
 	uint8_t speed = 1;
 
@@ -315,24 +316,8 @@ void startserial(bool& serialstart)
 			printf("Error %i from tcgetattr: %s\n", errno, strerror);
 			serialstart = false;
 		}
-
-		options.c_cflag &= ~PARENB;
-		options.c_cflag &= ~CSTOPB;
-		options.c_cflag &= ~CSIZE;
-		options.c_cflag |= CS8;
-		options.c_cflag &= ~CRTSCTS;
-		options.c_cflag |= CREAD | CLOCAL;
-		options.c_lflag &= ICANON;
-		options.c_lflag &= ECHO;
-		options.c_lflag &= ECHOE;
-		options.c_lflag &= ECHONL;
-		options.c_lflag &= ~ISIG;
-		options.c_iflag &= ~(IXON | IXOFF | IXANY);
-		options.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL);
-		options.c_oflag &= ~OPOST;
-		options.c_oflag &= ~ONLCR;
-		options.c_cc[VTIME] = 10;
-		options.c_cc[VMIN] = 1;
+		//options.c_cc[VTIME] = 10;
+		//options.c_cc[VMIN] = 1;
 		cfsetspeed(&options, B115200);
 
 		if (tcsetattr(serial_port, TCSANOW, &options) != 0)
@@ -358,23 +343,21 @@ void SendDatatoArduino(unsigned char senddata[15])
 			printf("[ERROR] UART TX\n");
 		}
 		for (int i = 0; i < 15; i++) {
-			std::cout << std::hex << (short)senddata[i] << std::dec << std::endl;
+			//std::cout << std::hex << (short)senddata[i] << std::dec << std::endl;
 		}
 		tcflush(serial_port, TCIOFLUSH);
 	}
 }
-
+int counter = 0;
 bool roboterReadData()
 {
-	char buffer;
-	read(serial_port, &buffer, 1);
-	if (buffer == 0xff)
-	{
-		return true;
+	char buffer[15];
+	read(serial_port, &buffer, 15);
+	for (int i = 0; i < 15; i++) {
+		std::cout << std::hex << (short)buffer[i] << std::dec << std::endl;
 	}
-	else
-	{
-		return false;
-	}
-	return false;
+	std::cout << "_____________"<< counter << std::endl;
+	counter++;
+	tcflush(serial_port, TCIOFLUSH);
+	
 }

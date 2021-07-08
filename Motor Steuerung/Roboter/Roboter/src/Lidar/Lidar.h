@@ -11,4 +11,4 @@ using namespace rp::standalone::rplidar;
 
 void startLidar(bool& lidarStart);
 
-void getLidarData(std::map<int, int>& lidardata);
+void getLidarData(float*data);

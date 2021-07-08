@@ -56,7 +56,7 @@ void startLidar(bool& lidarstart) {
 	std::cout << "Lidar Starts" << std::endl;
 }
 
-void getLidarData(std::map<int, int>& data) {
+void getLidarData(float*data) {
 
 	rplidar_response_measurement_node_hq_t nodes[8192];
 
