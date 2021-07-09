@@ -85,7 +85,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\Led\LedStripe.cpp" />
-    <ClCompile Include="src\Led\lib\ws2812-rpi.cpp" />
     <ClCompile Include="src\Lidar\Lidar.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Roboter\Roboter.cpp" />
@@ -93,8 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Led\LedStripe.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi-defines.h" />
-    <ClInclude Include="src\Led\lib\ws2812-rpi.h" />
     <ClInclude Include="src\Lidar\Lidar.h" />
     <ClInclude Include="src\Roboter\Roboter.h" />
     <ClInclude Include="src\utility\Vector2.h" />
@@ -127,10 +124,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
       <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib_arm;%(Link.AdditionalLibraryDirectories);/home/pi/P5</AdditionalLibraryDirectories>
-      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
+      <LibraryDependencies>pthread;rplidar_sdk;python3.7m</LibraryDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;/usr/include/python3.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>

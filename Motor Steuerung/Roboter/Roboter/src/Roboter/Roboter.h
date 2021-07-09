@@ -30,3 +30,5 @@ void roboterstop();
 void SendDatatoArduino(unsigned char senddata[13]);
 
 bool roboterReadData();
+
+inline int cmToSteps(int cm);
