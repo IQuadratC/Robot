@@ -124,10 +124,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
       <AdditionalLibraryDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\lib_arm;%(Link.AdditionalLibraryDirectories);/home/pi/P5</AdditionalLibraryDirectories>
-      <LibraryDependencies>pthread;rplidar_sdk</LibraryDependencies>
+      <LibraryDependencies>pthread;rplidar_sdk;python3.7m</LibraryDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;/usr/include/python3.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
