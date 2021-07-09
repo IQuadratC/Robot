@@ -1,5 +1,4 @@
 #pragma once
-#include"Python.h"
 class LedStripe
 {
 public:
@@ -10,4 +9,5 @@ public:
 private:
 	PyObject* pyfunktion;
 };
+
 
