@@ -334,7 +334,6 @@ void startserial(bool& serialstart)
 
 void SendDatatoArduino(unsigned char senddata[15])
 {
-
 	if (serial_port != -1)
 	{
 		int out = write(serial_port, senddata, 15);
@@ -348,7 +347,9 @@ void SendDatatoArduino(unsigned char senddata[15])
 		tcflush(serial_port, TCIOFLUSH);
 	}
 }
+
 int counter = 0;
+
 bool roboterReadData()
 {
 	char buffer[15];
@@ -361,3 +362,5 @@ bool roboterReadData()
 	tcflush(serial_port, TCIOFLUSH);
 	
 }
+
+inline int cmToSteps(int cm){ return cm * 68; }
