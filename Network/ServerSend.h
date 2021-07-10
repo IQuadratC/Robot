@@ -1,5 +1,6 @@
 #pragma once
-#include "Server.h"
+
+class Server;
 
 class ServerSend {
 

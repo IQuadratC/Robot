@@ -1,8 +1,14 @@
 #include <cstdio>
 #include<iostream>
-#include "Server.hpp"
+#include "Server.h"
 
 int main()
 {
-    StartServer();
+    Server server;
+    server.StartServer();
+    while (true)
+    {
+        /* code */
+    }
+    
 }

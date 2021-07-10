@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../Network.hpp"
-#include "../Server/Server.h"
+#include "Network.hpp"
+
+class Server;
 
 class UDPServer{
 

@@ -17,6 +17,11 @@
   "C_Cpp_Runner.enableWarnings": true,
   "C_Cpp_Runner.warningsAsError": false,
   "files.associations": {
-    "cstddef": "cpp"
+    "cstddef": "cpp",
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "*.tcc": "cpp",
+    "new": "cpp"
   }
 }
