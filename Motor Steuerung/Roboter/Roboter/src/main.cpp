@@ -2,16 +2,22 @@
 #include"Roboter/Roboter.h"
 #include"Lidar/Lidar.h"
 #include"Led/LedStripe.h"
-#include"iostream"
+#include"Logger/Log.h"
+
+#include<iostream>
 #include<cstdio>
 #include<chrono>
 
 int main(int argc, char** argv) {
 
+    Log::Init();
+    Log::GetLogger()->warn("Initialized Log!");
+
     LedStripe led(50);
     while (true)
     {
         led.rainbow(1);
+        Log::GetLogger()->info("Test");
     }
 
 }

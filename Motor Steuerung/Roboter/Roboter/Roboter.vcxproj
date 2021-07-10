@@ -82,10 +82,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemoteCppCompileToolExe>sudo g++</RemoteCppCompileToolExe>
     <RemoteCCompileToolExe>sudo g++</RemoteCCompileToolExe>
+    <SourcesToCopyRemotelyOverride>@(SourcesToCopyRemotely);@(DataFilesToCopyRemotely)</SourcesToCopyRemotelyOverride>
+    <IncludePath>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\spdlog;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="src\Led\LedStripe.cpp" />
     <ClCompile Include="src\Lidar\Lidar.cpp" />
+    <ClCompile Include="src\Logger\Log.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Roboter\Roboter.cpp" />
     <ClCompile Include="src\utility\Vector2.cpp" />
@@ -93,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="src\Led\LedStripe.h" />
     <ClInclude Include="src\Lidar\Lidar.h" />
+    <ClInclude Include="src\Logger\Log.h" />
     <ClInclude Include="src\Roboter\Roboter.h" />
     <ClInclude Include="src\utility\Vector2.h" />
   </ItemGroup>
@@ -127,7 +131,7 @@
       <LibraryDependencies>pthread;rplidar_sdk;python3.7m</LibraryDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;/usr/include/python3.7;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\rplidar;/usr/include/python3.7;C:\Users\timja\Documents\Dev\Github\Robot\Motor Steuerung\Roboter\depen\spdlog;/home/pi/spdlog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>

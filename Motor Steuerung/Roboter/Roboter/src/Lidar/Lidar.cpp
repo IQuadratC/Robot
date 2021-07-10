@@ -1,6 +1,5 @@
 #include"Lidar.h"
 
-
 RPlidarDriver* drv = nullptr;
 u_result result;
 
