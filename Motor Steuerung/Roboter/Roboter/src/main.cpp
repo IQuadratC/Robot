@@ -18,6 +18,13 @@ int main(int argc, char** argv) {
     {
         led.rainbow(1);
         Log::GetLogger()->info("Test");
+        char senddata[15];
+        memset(&senddata, 255, 15);
+        std::stringstream ss;
+        for (int i = 0; i < 15; i++) {
+            ss << std::hex << (short)senddata[i] << std::dec << " | ";
+        }
+        ROBOTER_LOG_INFO(ss.str().c_str());
     }
 
 }

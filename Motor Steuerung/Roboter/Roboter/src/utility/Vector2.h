@@ -8,7 +8,7 @@ public:
 	float x, y;
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& dt);
 
-	Vector2();
+	Vector2() = default;
 	Vector2(float xValue, float yValue);
 	Vector2(const Vector2& v);
 
@@ -33,7 +33,6 @@ public:
 	inline bool operator != (const Vector2& v) const { return (x != v.x) || (y != v.y); }
 	inline bool operator < (const Vector2& rhs) const { return (x < rhs.x) || ((x == rhs.x) && (y < rhs.y)); }
 	inline bool operator > (const Vector2& rhs) const { return (x > rhs.x) || ((x == rhs.x) && (y > rhs.y)); }
-
 
 	inline const Vector2 operator + (const Vector2& v) const { return Vector2(x + v.x, y + v.y); }
 	inline const Vector2 operator - (const Vector2& v) const { return Vector2(x - v.x, y - v.y); }

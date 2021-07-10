@@ -1,21 +1,34 @@
 #include "Roboter.h"
 #include <chrono>
-float stepPerCM = 500;        // Steps per cm
-float stepsPerDegree = 180;    // Steps per Degree
+#include "../Logger/Log.h"
+static const float stepPerCM = 68;        // Steps per cm
+static const float stepsPerDegree = 180;    // Steps per Degree
 
-int serial_port = 0; // Serial Port
+static int serial_port = 0; // Serial Port
 
-int maxSpeed = 5; // Maximal speed (kleiner gleich schneller(0-255))
+inline int cmToSteps(int cm) { return cm * 68; }
 
+uint8_t SpeedTODelay(float speed) {
 
-void moveRobot(float y, float x, float Speed)
+	int steps = cmToSteps(speed);
+	if (steps > 10000) {
+		ROBOTER_LOG_WARN("Speed is to Heigh!(Set Speed to Max Value(10000))");
+		steps = 10000;
+	}
+	float stepsInS = steps * 0.0001; // 0.0001 Interrupt Speed
+	uint8_t delay = round(((1 / stepsInS) - 1) * 10);
+	if (delay > 255) delay = 255;
+	return delay; // mal 10 um delay auflösung zu erhöhen
+}
+
+void moveRobot(float x, float y, float Speed)
 {
 	if (Speed != 0) {
 
-		int Motor12_Steps = 0;
+		int32_t Motor12_Steps = 0;
 		uint16_t Motor12_Delay = 0;
 
-		int Motor34_Steps = 0;
+		int32_t Motor34_Steps = 0;
 		uint16_t Motor34_Delay = 0;
 
 		if (x >= 0 && y >= 0 && abs(y) >= abs(x))
@@ -28,7 +41,6 @@ void moveRobot(float y, float x, float Speed)
 		}
 		else if (x >= 0 && y >= 0 && abs(y) <= abs(x))
 		{
-
 			Motor34_Steps = stepPerCM * x;
 			Motor34_Delay = Speed;
 
@@ -87,35 +99,8 @@ void moveRobot(float y, float x, float Speed)
 			Motor34_Delay = Speed * ((y + x) / y);
 		}
 
-		int m1speed;
-		int m2speed;
-		int m3speed;
-		int m4speed;
-
-		int index_m12 = 1;
-		int index_m34 = 1;
-		int m12_a = 100;
-		int m34_a = 100;
-
-		for (index_m12 = 1; index_m12 < 255; index_m12++)
-		{
-			m12_a /= 2;
-			if (m12_a < Motor12_Delay)
-				break;
-		}
-		for (index_m34 = 1; index_m34 < 255; index_m34++)
-		{
-			m34_a /= 2;
-			if (m34_a < Motor34_Delay)
-				break;
-		}
-
-		if (index_m12 < maxSpeed) {
-			index_m12 = maxSpeed;
-		}
-		if (index_m34 < maxSpeed) {
-			index_m34 = maxSpeed;
-		}
+		int m12speed = SpeedTODelay(Motor12_Delay);
+		int m34speed = SpeedTODelay(Motor34_Delay);
 
 		char diractions = 0;
 
@@ -161,7 +146,6 @@ void moveRobot(float y, float x, float Speed)
 		}
 
 		uint8_t senddata[15];
-
 		memset(senddata, 0, 15);
 
 		senddata[0] = 0x3C; //Start Byte
@@ -173,10 +157,10 @@ void moveRobot(float y, float x, float Speed)
 		senddata[6] = m3_Steps & 0xFF;
 		senddata[7] = m4_Steps >> 8 & 0xFF;
 		senddata[8] = m4_Steps & 0xFF;
-		senddata[9] = index_m12;
-		senddata[10] = index_m12;
-		senddata[11] = index_m34;
-		senddata[12] = index_m34;
+		senddata[9] = m12speed;
+		senddata[10] = m12speed;
+		senddata[11] = m34speed;
+		senddata[12] = m34speed;
 		senddata[13] = diractions;
 		senddata[14] = 0x3E; //End Byte
 
@@ -341,14 +325,14 @@ void SendDatatoArduino(unsigned char senddata[15])
 		{
 			printf("[ERROR] UART TX\n");
 		}
+		std::stringstream ss;
 		for (int i = 0; i < 15; i++) {
-			//std::cout << std::hex << (short)senddata[i] << std::dec << std::endl;
+			ss << std::hex << (short)senddata[i] << std::dec << " | ";
 		}
+		ROBOTER_LOG_INFO(ss.str().c_str());
 		tcflush(serial_port, TCIOFLUSH);
 	}
 }
-
-int counter = 0;
 
 bool roboterReadData()
 {
@@ -357,10 +341,7 @@ bool roboterReadData()
 	for (int i = 0; i < 15; i++) {
 		std::cout << std::hex << (short)buffer[i] << std::dec << std::endl;
 	}
-	std::cout << "_____________"<< counter << std::endl;
-	counter++;
 	tcflush(serial_port, TCIOFLUSH);
 	
 }
 
-inline int cmToSteps(int cm){ return cm * 68; }
