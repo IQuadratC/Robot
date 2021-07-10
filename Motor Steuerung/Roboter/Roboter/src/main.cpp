@@ -8,9 +8,13 @@
 
 int main(int argc, char** argv) {
 
+    LedStripe led(50);
+    while (true)
+    {
+        led.rainbow(1);
+    }
 
-
-
+}
     /*ol test;
     std::cout << "Test" << std::endl;
     startserial(test);

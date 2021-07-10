@@ -1,10 +1,13 @@
 #include "LedStripe.h"
-
+#include"chrono"
+#include"thread"
+#include<iostream>
 const char* moduleName = "ledPy";
-const char* funktionName = "setPixel";
+const char* funktionName1 = "setPixel";
+const char* funktionName2 = "ledupdate";
 const char* importPath = "/home/pi/Python";
 
-LedStripe::LedStripe()
+LedStripe::LedStripe(uint32_t numLeds) : numLeds(numLeds)
 {
 	Py_Initialize();
 
@@ -20,51 +23,55 @@ LedStripe::LedStripe()
 
 	PyObject* pyModule = PyImport_Import(pyModuleName);
 
-	pyfunktion = PyObject_GetAttrString(pyModule, funktionName);
-	Py_DECREF(pyfunktion);
+	pyfunktion1 = PyObject_GetAttrString(pyModule, funktionName1);
+	Py_DECREF(pyfunktion1);
+    pyfunktion2 = PyObject_GetAttrString(pyModule, funktionName2);
+    Py_DECREF(pyfunktion2);
 }
+
 LedStripe::~LedStripe()
 {
 	Py_FinalizeEx();
 }
 
-void LedStripe::setLed(int p, uint8_t r, uint8_t g, uint8_t b)
+void LedStripe::setLed(int p, RGB rgb)
 {
 	PyObject* pyFunktionArgs = PyTuple_New(4);
 	PyTuple_SetItem(pyFunktionArgs, 0, PyLong_FromLong(p));
-	PyTuple_SetItem(pyFunktionArgs, 1, PyLong_FromLong(r));
-	PyTuple_SetItem(pyFunktionArgs, 2, PyLong_FromLong(g));
-	PyTuple_SetItem(pyFunktionArgs, 3, PyLong_FromLong(b));
+	PyTuple_SetItem(pyFunktionArgs, 1, PyLong_FromLong(rgb.r));
+	PyTuple_SetItem(pyFunktionArgs, 2, PyLong_FromLong(rgb.g));
+	PyTuple_SetItem(pyFunktionArgs, 3, PyLong_FromLong(rgb.b));
 
-	PyObject_CallObject(pyfunktion, pyFunktionArgs);
+	PyObject_CallObject(pyfunktion1, pyFunktionArgs);
 
+}
+
+void LedStripe::update()
+{
+    PyObject* pyFunktionArgs = PyTuple_New(0);
+    PyObject_CallObject(pyfunktion2, pyFunktionArgs);
 }
 
 void LedStripe::rainbow(int delay)
 {
-    for (int j = 0; j < 255; j++)
+    for (int j = 0; j < 255; j+=2)
     {
-        for (int i = 0; i < numLeds; i++)
+        for (int i = 0; i < 100; i++)
         {
-            setLed(i, HSVtoRGB(i - (j * 2), (float)100, (float)100));
+            setLed(i,  HSVtoRGB(i - (j * 1) & 255,(float)100,(float)100));
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+        update();
     }
 }
 
-struct RGB
-{
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-};
 
-RGB HSVtoRGB(float H, float S, float V)
+RGB LedStripe::HSVtoRGB(float H, float S, float V)
 {
 
     if (H > 360 || H < 0 || S > 100 || S < 0 || V > 100 || V < 0)
     {
-        return;
+        return { 0,0,0 };
     }
     float s = S / 100;
     float v = V / 100;
