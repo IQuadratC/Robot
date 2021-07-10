@@ -146,7 +146,7 @@ void TCPServer(bool& lidarstart)
 
 			//clear the socket set
 			FD_ZERO(&readfds);
-
+			
 			//add master socket to set
 			FD_SET(master_socket, &readfds);
 			max_sd = master_socket;
