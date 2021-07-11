@@ -14,7 +14,12 @@ int main(int argc, char** argv) {
     Log::GetLogger()->warn("Initialized Log!");
 
     LedStripe led(50);
-    while (true)
+    bool test;
+    startserial(test);
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    moveRobot(2.5, 10, 10);
+
+    /*while (true)
     {
         led.rainbow(1);
         Log::GetLogger()->info("Test");
@@ -25,7 +30,7 @@ int main(int argc, char** argv) {
             ss << std::hex << (short)senddata[i] << std::dec << " | ";
         }
         ROBOTER_LOG_INFO(ss.str().c_str());
-    }
+    }*/
 
 }
     /*ol test;

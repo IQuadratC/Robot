@@ -8,7 +8,7 @@ public:
 	float x, y;
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& dt);
 
-	Vector2() = default;
+	Vector2();
 	Vector2(float xValue, float yValue);
 	Vector2(const Vector2& v);
 
