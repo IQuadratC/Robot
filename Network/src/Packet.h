@@ -1,7 +1,6 @@
 #pragma once
-#include<iostream>
-#include<vector>
-#include<string>
+
+#include "Network.h"
 
 class Packet{
 
@@ -12,6 +11,7 @@ public:
     ~Packet();
 
     size_t Length(){return buffer.size();}
+    uint8_t* ToArray(){return buffer.data();}
 
     void Write(uint8_t value);
     void Write(int pos, uint8_t value);
@@ -29,9 +29,13 @@ public:
     void Write(std::string& value);
 
     uint8_t ReadByte();
+    uint8_t* ReadBytes(size_t length);
     int16_t ReadInt16();
     int32_t ReadInt32();
-
+    int64_t ReadInt64();
+    float ReadFloat();
+    bool ReadBool();
+    std::string ReadString();
 
 private:
     std::vector<uint8_t> buffer;
