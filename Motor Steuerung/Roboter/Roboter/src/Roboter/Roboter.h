@@ -33,3 +33,5 @@ void SendDatatoArduino(unsigned char senddata[13]);
 bool roboterReadData();
 
 inline int cmToSteps(int cm);
+
+void Oct1Speed(float x,float y,int32_t Motor12_Steps,int32_t Motor34_Steps,float Motor12_Delay,float Motor34_Delay);

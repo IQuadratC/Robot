@@ -1,24 +1,27 @@
 #include "Roboter.h"
 #include <chrono>
 #include "../Logger/Log.h"
-static const float stepPerCM = 68;        // Steps per cm
-static const float stepsPerDegree = 180;    // Steps per Degree
+static const float stepPerCM = 68;		 // Steps per cm
+static const float stepsPerDegree = 180; // Steps per Degree
 
 static int serial_port = 0; // Serial Port
 
 inline int cmToSteps(int cm) { return cm * 68; }
 
-uint8_t SpeedTODelay(float speed) {
+uint8_t SpeedTODelay(float speed)
+{
 
 	int steps = cmToSteps(speed);
-	if (steps > 10000) {
-		ROBOTER_LOG_WARN("Speed is to Heigh!(Set Speed to Max Value(10000))");
+	if (steps > 10000)
+	{
+		ROBOTER_LOG_WARN("Speed is to Heigh!(Set Speed to Max Value(10000(147cm/s)))");
 		steps = 10000;
 	}
 	float stepsInS = steps * 0.0001; // 0.0001 Interrupt Speed
 	uint8_t delay = round(((1 / stepsInS) - 1) * 10);
-	if (delay > 255) delay = 255;
-	return delay; // mal 10 um delay auflösung zu erhöhen
+	if (delay > 255)
+		delay = 255;
+	return delay; // mal 10 um delay auflï¿½sung zu erhï¿½hen
 }
 
 static bool newSteps = true;
@@ -28,8 +31,8 @@ static float m34_old_delay = 0;
 void moveRobot(float x, float y, float Speed)
 {
 	newSteps = true;
-	if (Speed != 0) {
-
+	if (Speed != 0)
+	{
 		int32_t Motor12_Steps = 0;
 		float Motor12_Delay = 0;
 
@@ -40,109 +43,91 @@ void moveRobot(float x, float y, float Speed)
 		{
 			Motor34_Steps = stepPerCM * y;
 			Motor34_Delay = Speed;
-
+			float f = ((y - x) / y);
 			Motor12_Steps = stepPerCM * (y - x);
-			Motor12_Delay = Speed * ((y - x) / y);
+			Motor12_Delay = Speed * f;
 
-			bool m12 = true;
-			bool m34 = true;
-
-			SendStepsAndSpeed(Motor12_Steps, Motor34_Steps, m12_old_delay, m34_old_delay);
-
-			newSteps = false;
-
-			while (m12 && m34)
-			{
-				if (abs(m12_old_delay - Motor12_Delay) > 2) {
-					m12_old_delay += 1;
-				}
-				else {
-					m12_old_delay = Motor12_Delay;
-					m12 = false;
-				}
-
-				if (abs(m34_old_delay - Motor34_Delay) > 2) {
-					m34_old_delay += 1 * ((y - x) / y);
-				}
-				else {
-					m34_old_delay = Motor34_Delay;
-					m34 = false;
-				}
-
-				SendStepsAndSpeed(0, 0, m12_old_delay, m34_old_delay);
-				std::stringstream ss;
-				ss << m12_old_delay << "|" << m34_old_delay;
-				ROBOTER_LOG_INFO(ss.str().c_str());
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			}
-			SendStepsAndSpeed(0, 0, Motor12_Delay, Motor34_Delay);
-			newSteps = true;
+			OctM12Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
 
 		}
 		else if (x >= 0 && y >= 0 && abs(y) <= abs(x))
 		{
 			Motor34_Steps = stepPerCM * x;
 			Motor34_Delay = Speed;
-
+			float f = 
 			Motor12_Steps = -stepPerCM * (x - y);
 			Motor12_Delay = Speed * ((x - y) / x);
+			
+			OctM12Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
+
 		}
 		else if (x >= 0 && y <= 0 && abs(y) <= abs(x))
 		{
 
 			Motor12_Steps = -stepPerCM * x;
 			Motor12_Delay = Speed;
-
+			float f = ((x + y) / x);
 			Motor34_Steps = stepPerCM * (x + y);
-			Motor34_Delay = Speed * ((x + y) / x);
+			Motor34_Delay = Speed * f;
+
+			OctM34Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
+
 		}
 		else if (x >= 0 && y <= 0 && abs(y) >= abs(x))
 		{
 
 			Motor12_Steps = stepPerCM * y;
 			Motor12_Delay = Speed;
-
+			float f = ((y + x) / y);
 			Motor34_Steps = stepPerCM * (y + x);
-			Motor34_Delay = Speed * ((y + x) / y);
+			Motor34_Delay = Speed * f;
+
+			OctM34Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
 		}
 		else if (x <= 0 && y <= 0 && abs(y) >= abs(x))
 		{
 
 			Motor34_Steps = stepPerCM * y;
 			Motor34_Delay = Speed;
-
+			float f = ((y - x) / y);
 			Motor12_Steps = stepPerCM * (y - x);
-			Motor12_Delay = Speed * ((y - x) / y);
+			Motor12_Delay = Speed * f;
+
+			OctM12Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
 		}
 		else if (x <= 0 && y <= 0 && abs(y) <= abs(x))
 		{
 			Motor34_Steps = stepPerCM * x;
 			Motor34_Delay = Speed;
-
+			float f = ((x - y) / x);
 			Motor12_Steps = -stepPerCM * (x - y);
-			Motor12_Delay = Speed * ((x - y) / x);
+			Motor12_Delay = Speed * f;
+
+			OctM12Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
 		}
 		else if (x <= 0 && y >= 0 && abs(y) <= abs(x))
 		{
 			Motor12_Steps = -stepPerCM * x;
 			Motor12_Delay = Speed;
-
+			float f = ((x + y) / x);
 			Motor34_Steps = stepPerCM * (x + y);
-			Motor34_Delay = Speed * ((x + y) / x);
+			Motor34_Delay = Speed * f;
+
+			OctM34Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
 		}
 		else if (x <= 0 && y >= 0 && abs(y) >= abs(x))
 		{
 			Motor12_Steps = stepPerCM * y;
 			Motor12_Delay = Speed;
-
+			float f = ((y + x) / y);
 			Motor34_Steps = stepPerCM * (y + x);
-			Motor34_Delay = Speed * ((y + x) / y);
-		}
-		
-		
-	}
-	else {
+			Motor34_Delay = Speed * f;
 
+			OctM34Speed(Motor12_Steps,Motor34_Steps,Motor12_Delay,Motor34_Delay,f);
+		}
+	}
+	else
+	{
 		uint8_t senddata[15];
 		memset(senddata, 0, 15);
 		senddata[0] = 0x3C;
@@ -151,20 +136,25 @@ void moveRobot(float x, float y, float Speed)
 	}
 }
 
-void SendStepsAndSpeed(int32_t m12_Steps, int32_t m34_Steps,float m12_speed,float m34_speed) {
+void SendStepsAndSpeed(int32_t m12_Steps, int32_t m34_Steps, float m12_speed, float m34_speed)
+{
 
 	uint8_t m12speed;
 	uint8_t m34speed;
-	if (m12_speed == 0) {
+	if (m12_speed == 0)
+	{
 		m12speed = 255;
 	}
-	else {
+	else
+	{
 		m12speed = SpeedTODelay(m12_speed);
 	}
-	if (m34_speed == 0) {
+	if (m34_speed == 0)
+	{
 		m34speed = 255;
 	}
-	else {
+	else
+	{
 		m34speed = SpeedTODelay(m34_speed);
 	}
 
@@ -180,10 +170,12 @@ void SendStepsAndSpeed(int32_t m12_Steps, int32_t m34_Steps,float m12_speed,floa
 		diractions |= 1 << 2;
 		diractions |= 1 << 3;
 	}
-	if (newSteps) {
+	if (newSteps)
+	{
 		diractions |= 0 << 7;
 	}
-	else {
+	else
+	{
 		diractions |= 1 << 7;
 	}
 
@@ -284,10 +276,9 @@ void rotateRobot(int a, int Speedprozent)
 		senddata[14] = 0x3E; //End Byte
 		SendDatatoArduino(senddata);
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-
 	}
-	else {
+	else
+	{
 		unsigned char senddata[15];
 		memset(senddata, 0, 15);
 		senddata[0] = 0x3C;
@@ -295,7 +286,6 @@ void rotateRobot(int a, int Speedprozent)
 		SendDatatoArduino(senddata);
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
-
 }
 
 void roboterTest()
@@ -305,7 +295,6 @@ void roboterTest()
 	unsigned short m3 = 3200;
 	unsigned short m4 = 3200;
 
-
 	uint8_t speed = 1;
 
 	char diractions = 0;
@@ -314,7 +303,6 @@ void roboterTest()
 	diractions |= 0 << 1;
 	diractions |= 0 << 2;
 	diractions |= 0 << 3;
-
 
 	unsigned char senddata[15];
 	memset(senddata, 0, 15);
@@ -337,7 +325,7 @@ void roboterTest()
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
-void startserial(bool& serialstart)
+void startserial(bool &serialstart)
 {
 	//Quelle: https://blog.mbedded.ninja/programming/operating-systems/linux/linux-serial-ports-using-c-cpp/
 	serialstart = true;
@@ -382,7 +370,8 @@ void SendDatatoArduino(unsigned char senddata[15])
 			printf("[ERROR] UART TX\n");
 		}
 		std::stringstream ss;
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 15; i++)
+		{
 			ss << std::hex << (short)senddata[i] << std::dec << " | ";
 		}
 		ROBOTER_LOG_INFO(ss.str().c_str());
@@ -394,10 +383,99 @@ bool roboterReadData()
 {
 	char buffer[15];
 	read(serial_port, &buffer, 15);
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 15; i++)
+	{
 		std::cout << std::hex << (short)buffer[i] << std::dec << std::endl;
 	}
 	tcflush(serial_port, TCIOFLUSH);
-	
 }
 
+void OctM12Speed(int32_t Motor12_Steps,int32_t Motor34_Steps,float Motor12_Delay,float Motor34_Delay,float f)
+{
+    bool m12 = true;
+    bool m34 = true;
+
+    newSteps = false;
+
+    while (m12 || m34)
+    {
+        if ((Motor12_Delay - m12_old_delay) > 0.5)
+        {
+            m12_old_delay += 1 * f;
+            
+        }
+        else if (m12_old_delay - Motor12_Delay > 0.5)
+        {
+            m12_old_delay -=  1 / f;
+        }
+        else if(abs(Motor12_Delay - m12_old_delay) <= 0.5)
+        {
+            m12_old_delay = Motor12_Delay;
+            m12 = false;
+        }
+
+        if ((Motor34_Delay - m34_old_delay) > 0.5)
+        {
+            m34_old_delay += 1;
+        }
+        else if(m34_old_delay - Motor34_Delay > 0.5)
+        {
+            m34_old_delay -= 1;
+        }
+        else if (abs(Motor34_Delay - m34_old_delay) <= 0.5)
+        {
+            m34_old_delay = Motor34_Delay;
+            m34 = false;
+        }
+
+
+        std::cout << "[m12]" << m12_old_delay << "|" << m34_old_delay << "|" << f << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    newSteps = true;
+}
+
+void OctM34Speed(int32_t Motor12_Steps,int32_t Motor34_Steps,float Motor12_Delay,float Motor34_Delay,float f)
+{
+    bool m12 = true;
+    bool m34 = true;
+
+
+    newSteps = false;
+
+    while (m12 || m34)
+    {
+        if ((Motor12_Delay - m12_old_delay) > 0.5)
+        {
+            m12_old_delay += 1;
+            
+        }
+        else if (m12_old_delay - Motor12_Delay > 0.5)
+        {
+            m12_old_delay -=  1;
+        }
+        else if(abs(Motor12_Delay - m12_old_delay) <= 0.5)
+        {
+            m12_old_delay = Motor12_Delay;
+            m12 = false;
+        }
+
+        if ((Motor34_Delay - m34_old_delay) > 0.5)
+        {
+            m34_old_delay += 1 * f;
+        }
+        else if(m34_old_delay - Motor34_Delay > 0.5)
+        {
+            m34_old_delay -= 1 / f;
+        }
+        else if (abs(Motor34_Delay - m34_old_delay) <= 0.5)
+        {
+            m34_old_delay = Motor34_Delay;
+            m34 = false;
+        }
+
+        std::cout  << "[m34]" << m12_old_delay << "|" << m34_old_delay << "|" <<f << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    newSteps = true;
+}
