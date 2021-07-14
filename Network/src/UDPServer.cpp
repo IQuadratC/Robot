@@ -54,7 +54,12 @@ void UDPServer::mainLoop()
             std::cout << "SERVER: no data recived" << std::endl;
             continue;
         }
-        std::cout << "SERVER: udp data recived" << std::endl;
+        if (readlen == 0){
+            Packet* packet = new Packet((uint8_t*)buffer, BufferSize);
+            readlen = packet->ReadInt32() + 4;
+        }
+
+        std::cout << "SERVER: udp data recived Message legth: " << readlen << std::endl;
 
         uint8_t data[readlen];
         memcpy(data, buffer, readlen);

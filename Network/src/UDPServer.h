@@ -22,6 +22,7 @@ private:
     Server* server;
 
     struct sockaddr_in address;
-    int addrlen, readlen;
-    char buffer[BufferSize]{0};
+    int addrlen;
+    ssize_t readlen;
+    char buffer[BufferSize];
 };

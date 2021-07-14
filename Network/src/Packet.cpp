@@ -139,8 +139,8 @@ uint8_t* Packet::ReadBytes(size_t length){
       if(buffer.size() > readPos){
 
         int16_t value = int16_t(
-            buffer[readPos + 0] << 8 |
-            buffer[readPos + 1]
+            buffer[readPos + 1] << 8 |
+            buffer[readPos + 0]
         );
 
         readPos += 2;
@@ -153,10 +153,10 @@ uint8_t* Packet::ReadBytes(size_t length){
       if(buffer.size() > readPos){
     
         int32_t value = int32_t(
-            buffer[readPos + 0] << 24 | 
-            buffer[readPos + 1] << 16 |
-            buffer[readPos + 2] << 8 |
-            buffer[readPos + 3]
+            buffer[readPos + 3] << 24 | 
+            buffer[readPos + 2] << 16 |
+            buffer[readPos + 1] << 8 |
+            buffer[readPos + 0]
         );
 
         readPos += 4;
@@ -169,14 +169,14 @@ uint8_t* Packet::ReadBytes(size_t length){
       if(buffer.size() > readPos){
     
         int64_t value = int64_t(
-            buffer[readPos + 0] << 56 | 
-            buffer[readPos + 1] << 48 |
-            buffer[readPos + 2] << 40 |
-            buffer[readPos + 3] << 32 |
-            buffer[readPos + 4] << 24 | 
-            buffer[readPos + 5] << 16 |
-            buffer[readPos + 6] << 8 |
-            buffer[readPos + 7]
+            buffer[readPos + 7] << 56 | 
+            buffer[readPos + 6] << 48 |
+            buffer[readPos + 5] << 40 |
+            buffer[readPos + 4] << 32 |
+            buffer[readPos + 3] << 24 | 
+            buffer[readPos + 2] << 16 |
+            buffer[readPos + 1] << 8 |
+            buffer[readPos + 0]
         );
 
         readPos += 8;
@@ -189,10 +189,10 @@ float Packet::ReadFloat(){
       if(buffer.size() > readPos){
     
         float value = float(
-            buffer[readPos + 0] << 24 | 
-            buffer[readPos + 1] << 16 |
-            buffer[readPos + 2] << 8 |
-            buffer[readPos + 3]
+            buffer[readPos + 3] << 24 | 
+            buffer[readPos + 2] << 16 |
+            buffer[readPos + 1] << 8 |
+            buffer[readPos + 0]
         );
 
         readPos += 4;
