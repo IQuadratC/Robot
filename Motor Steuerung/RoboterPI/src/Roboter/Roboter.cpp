@@ -28,6 +28,9 @@ static bool newSteps = true;
 static float m12_old_delay = 0;
 static float m34_old_delay = 0;
 
+void OctM12Speed(int32_t Motor12_Steps,int32_t Motor34_Steps,float Motor12_Delay,float Motor34_Delay,float f);
+void OctM34Speed(int32_t Motor12_Steps,int32_t Motor34_Steps,float Motor12_Delay,float Motor34_Delay,float f);
+
 void moveRobot(float x, float y, float Speed)
 {
 	newSteps = true;
