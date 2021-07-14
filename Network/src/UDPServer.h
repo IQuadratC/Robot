@@ -20,9 +20,8 @@ private:
     
     int udpListener;
     Server* server;
-    fd_set readfds;
 
     struct sockaddr_in address;
-    int addrlen;
+    int addrlen, readlen;
     char buffer[BufferSize]{0};
 };

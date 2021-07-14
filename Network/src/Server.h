@@ -13,7 +13,8 @@ struct ServerClient
     char* ip = 0;
     int socket = 0;
     char receiveBuffer[BufferSize]{0};
-    struct sockaddr udpAdress{0}; 
+    struct sockaddr_in udpAdress{0}; 
+    bool udpReady = false;
     NetworkState state = NetworkState::notConnected;
 };
 

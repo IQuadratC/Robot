@@ -20,12 +20,11 @@ private:
     int tcpListener;
     Server* server;
     fd_set readfds;
-    int max_sd,sd,activity,valread,new_socket;
+    int max_sd, sd, activity, valread, new_socket;
     
     struct sockaddr_in address;
     int addrlen;
     char buffer[BufferSize]{0};
-
 };
 
 

@@ -28,8 +28,11 @@ void Server::StartServer(){
     //std::cout << "SERVER: Starting..." << std::endl;
     serverState = NetworkState::connecting;
 
-    tcpServer->StartTCP();
-    //std::thread t1(&TCPServer::StartTCP, tcpServer);
+    std::thread t1(&TCPServer::StartTCP, tcpServer);
+    t1.detach();
+
+    std::thread t2(&UDPServer::StartUDP, udpServer);
+    t2.detach();
 
     std::cout << "SERVER: Started" << std::endl;
     serverState = NetworkState::connected;
@@ -99,6 +102,7 @@ void Server::SendUDPDataToAll(Packet* packet){
 
 void Server::DisconnectClient(uint8_t client){
     tcpServer->DisconnectTCP(client);
+    udpServer->DisconnectUDP(client);
 }
 
 void Server::StopServer(){
@@ -112,6 +116,7 @@ void Server::StopServer(){
     }
 
     tcpServer->StoptTCP();
+    udpServer->StopUDP();
 
     std::cout << "SERVER: Stopped" << std::endl;
 }

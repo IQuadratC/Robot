@@ -6,7 +6,7 @@ INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS = -std=c++17  $(INC_FLAGS)
-LDFLAGS = 
+LDFLAGS = -pthread
 
 debug: CPPFLAGS += -O0 -g -DDEBUG
 debug: clean Network

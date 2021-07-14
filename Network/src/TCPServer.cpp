@@ -50,7 +50,7 @@ void TCPServer::StartTCP()
 
 void TCPServer::mainLoop()
 {
-    while (server->serverState == NetworkState::connected)
+    while (server->serverState == NetworkState::connected || server->serverState == NetworkState::connecting)
     {
         FD_ZERO(&readfds);
         FD_SET(tcpListener, &readfds);
