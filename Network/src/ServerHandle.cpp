@@ -42,6 +42,4 @@ void ServerHandle::ClientUDPConnectionStatus(uint8_t client, Packet* packet)
 {
     server->serverClients[client].updConnected = packet->ReadBool() && server->serverUDPSupport;
     std::cout << "SERVER: [" << (int)client << "] UDP connection status: " << server->serverClients[client].updConnected << std::endl;
-
-    server->serverSend->DebugMessage("test from Server");
 }

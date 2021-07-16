@@ -71,7 +71,7 @@ void ServerSend::ServerCamImage(uint8_t client, u_char* data, int width, int hei
 
     packet = new Packet((uint8_t) Packets::serverCamImage);
 
-    auto ok = TooJpeg::writeJpeg(camJepgOutput, data, width, height, true, 90, false, 0);
+    bool ok = TooJpeg::writeJpeg(camJepgOutput, data, width, height, true, 90, false, 0);
 
     server->SendUDPData(client, packet);
 }

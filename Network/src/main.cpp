@@ -13,72 +13,90 @@ void  signalhandler(int sig)
 	exit(0);
 }
 
+#define MaxFPS 30.0
+#define MillisPerSec 1000.0
+#define MillisPerFrame MillisPerSec / MaxFPS
 
-void udpServer(){
-    char buffer[100];
-    char *message = "Hello Client";
-    int listenfd, len;
-    struct sockaddr_in servaddr, cliaddr;
-    bzero(&servaddr, sizeof(servaddr));
-  
-    // Create a UDP Socket
-    listenfd = socket(AF_INET, SOCK_DGRAM, 0);        
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(PORT);
-    servaddr.sin_family = AF_INET; 
-   
-    // bind server address to socket descriptor
-    bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
-       
-    //receive the datagram
-    len = sizeof(cliaddr);
+float delta;
+std::chrono::system_clock::time_point a = std::chrono::system_clock::now();
+std::chrono::system_clock::time_point b = std::chrono::system_clock::now();
 
-     puts("Server Online:");
-    int n = recvfrom(listenfd, buffer, sizeof(buffer),
-            0, (struct sockaddr*)&cliaddr, (socklen_t*)&len); //receive message from server
-    buffer[n] = '\0';
-    puts("Server Data recived:");
-    puts(buffer);
-           
-    // send the response
-    sendto(listenfd, message, 1000, 0,
-          (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+void logFPS(std::chrono::duration<double, std::milli> work_time) {
+    double possibleFPS = MillisPerSec / work_time.count();
+    double fps = std::min(possibleFPS, MaxFPS);
+    
+#ifdef DEBUG
+    std::chrono::duration<double, std::milli> sleep_time = b - a;
+
+    printf("FPS: %.0f Possible: %0.f Work: %.4fms Sleep: %.4fms\n", fps, possibleFPS, work_time.count(), sleep_time.count());
+#else
+
+    printf("FPS: %.0f Possible: %.0f\n", fps, possibleFPS);
+#endif
 }
 
-void udpClient(){
-    char buffer[100];
-    char *message = "Hello Server";
-    int sockfd, n;
-    struct sockaddr_in servaddr;
-      
-    // clear servaddr
-    bzero(&servaddr, sizeof(servaddr));
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    servaddr.sin_port = htons(PORT);
-    servaddr.sin_family = AF_INET;
-      
-    // create datagram socket
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-      
-    // connect to server
-    if(connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
-    {
-        printf("\n Error : Connect Failed \n");
-        exit(0);
+u_char* createImage(int width, int height, int timestemp){
+    int bytesPerPixel = 3;
+    u_char* image = new unsigned char[width * height * bytesPerPixel];
+
+    // create a nice color transition (replace with your code)
+    for (auto y = 0; y < height; y++){
+        for (auto x = 0; x < width; x++)
+        {
+        // memory location of current pixel
+        auto offset = (y * width + x) * bytesPerPixel;
+
+        // red and green fade from 0 to 255, blue is always 127
+        image[offset    ] = 255 * x / width;
+        image[offset + 1] = 255 * y / height;
+        image[offset + 2] = timestemp % 255;
+        }
     }
-  
-    // request to send datagram
-    // no need to specify server address in sendto
-    // connect stores the peers IP and port
-    sendto(sockfd, message, 1000, 0, (struct sockaddr*)NULL, sizeof(servaddr));
-      
-    // waiting for response
-    recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)NULL, NULL);
-    puts(buffer);
-  
-    // close the descriptor
-    close(sockfd);
+    return image;
 }
+
+int i;
+
+void run() {
+
+    u_char* images[255];
+    int x = 100;
+    int y = 100;
+    for (size_t i = 0; i < 255; i++)
+    {
+        images[i] = createImage(x, y, i);
+    }
+
+    while (true) {
+        a = std::chrono::system_clock::now();
+        std::chrono::duration<double, std::milli> work_time = a - b;
+
+        if (work_time.count() < MillisPerFrame) {
+            delta = MillisPerFrame / MillisPerSec;
+
+            std::chrono::duration<double, std::milli> delta_ms(MillisPerFrame - work_time.count());
+            auto delta_ms_duration = std::chrono::duration_cast<std::chrono::milliseconds>(delta_ms);
+            std::this_thread::sleep_for(std::chrono::milliseconds(delta_ms_duration.count()));
+        }
+        else {
+            delta = work_time.count() / MillisPerSec;
+        }
+        b = std::chrono::system_clock::now();
+
+        logFPS(work_time);
+        
+        // Loop:
+        if (server.serverClients[1].updConnected){
+            
+            int id = i % 255;
+            i++;
+
+            server.serverSend->ServerCamImage(1, images[id], x, y);
+        }
+    }
+}
+
+
 
 int main()
 {
@@ -86,9 +104,6 @@ int main()
 
     server.StartServer();
 
-    while (true)
-    {
-        /* code */
-    }
+    run();
 }
 
