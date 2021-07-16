@@ -84,17 +84,7 @@ int main()
 {
     signal(SIGINT, signalhandler);
 
-    /*
-    std::thread t1(&udpServer);
-    t1.detach();
-
-    */
     server.StartServer();
-
-    /*
-    std::thread t2(&udpClient);
-    t2.detach();
-    */
 
     while (true)
     {

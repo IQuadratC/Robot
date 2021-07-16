@@ -7,10 +7,13 @@ Server::Server(){
     serverHandle = new ServerHandle(this);
     serverSend = new ServerSend(this);
 
-    packetHandlers.insert({(uint8_t)Packets::clientConnectionReceived, &ServerHandle::ClientConnectionReceived});
     packetHandlers.insert({(uint8_t)Packets::debugMessage, &ServerHandle::DebugMessage});
+    packetHandlers.insert({(uint8_t)Packets::clientSettings, &ServerHandle::ClientSettings});
+    packetHandlers.insert({(uint8_t)Packets::clientUDPConnection, &ServerHandle::ClientUDPConnection});
+    packetHandlers.insert({(uint8_t)Packets::clientUDPConnectionStatus, &ServerHandle::ClientUDPConnectionStatus});
 
     serverState = NetworkState::notConnected;
+    serverUDPSupport = true;
 }
 
 Server::~Server(){
@@ -31,9 +34,11 @@ void Server::StartServer(){
     std::thread t1(&TCPServer::StartTCP, tcpServer);
     t1.detach();
 
-    std::thread t2(&UDPServer::StartUDP, udpServer);
-    t2.detach();
-
+    if (serverUDPSupport){
+        std::thread t2(&UDPServer::StartUDP, udpServer);
+        t2.detach();
+    }
+    
     std::cout << "SERVER: Started" << std::endl;
     serverState = NetworkState::connected;
 }
@@ -43,10 +48,10 @@ void Server::ConnectClient(uint8_t client){
     std::cout << "SERVER: Connecting Client " << (int) serverClients[client].id << "..." << std::endl;
 
     serverClients[client].state = NetworkState::connecting;
-    serverSend->ServerConnection(client);
+    serverSend->ServerSettings(client);
 }
 
-uint8_t Server::HandelData(uint8_t data[], size_t lengtharray, uint8_t client){
+void Server::HandelData(uint8_t data[], size_t lengtharray, uint8_t client){
     
     Packet* packet = new Packet(data, lengtharray);
     
@@ -54,14 +59,14 @@ uint8_t Server::HandelData(uint8_t data[], size_t lengtharray, uint8_t client){
     if (length + 4 != lengtharray)
     {
         //TODO Error
-        return 0;
+        return;
     }
     uint8_t clientId = packet->ReadByte();
 
     if (clientId == 0 || client != 0 && serverClients[client].id != clientId)
     {
         //TODO Error
-        return 0;
+        return;
     } 
     if(clientId != 0 && client == 0)
     {
@@ -70,8 +75,7 @@ uint8_t Server::HandelData(uint8_t data[], size_t lengtharray, uint8_t client){
     
     uint8_t packetId = packet->ReadByte();
     
-    (serverHandle->*packetHandlers[packetId])(packetId, packet);
-    return client;
+    (serverHandle->*packetHandlers[packetId])(clientId, packet);
 }
 
 void Server::AddHeaderToPacket(Packet* packet){
@@ -84,20 +88,31 @@ void Server::SendTCPData(uint8_t client, Packet* packet){
     tcpServer->SendTCPData(client, packet->ToArray(), packet->Length());
 }
 void Server::SendTCPDataToAll(Packet* packet){
-    AddHeaderToPacket(packet);
-
     for (uint8_t i = 0; i < MaxClients; i++)
     {
-        tcpServer->SendTCPData(i, packet->ToArray(), packet->Length());
+        if (serverClients[i].id != 0){
+            SendTCPData(i, packet);
+        }
     }
 }
 
 void Server::SendUDPData(uint8_t client, Packet* packet){
+    if (!serverUDPSupport || !serverClients[client].clientUDPSupport ){
+        SendTCPData(client, packet);
+        return;
+    }
+
     AddHeaderToPacket(packet);
+    udpServer->SendUDPData(client, packet->ToArray(), packet->Length());
 }
 
 void Server::SendUDPDataToAll(Packet* packet){
-    AddHeaderToPacket(packet);
+    for (uint8_t i = 0; i < MaxClients; i++)
+    {
+        if (serverClients[i].id != 0){
+           SendUDPData(i, packet);
+        }
+    }
 }
 
 void Server::DisconnectClient(uint8_t client){

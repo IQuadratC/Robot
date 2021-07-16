@@ -95,22 +95,22 @@ void TCPServer::mainLoop()
                     break;
                 }
             }
+        }
 
-            for (int i = 0; i < MaxClients; i++)
-			{
-				if (FD_ISSET(sd, &readfds))
-				{
-					//Check if it was for closing , and also read the incoming message
-					if ((valread = read(server->serverClients[i].socket, 
-                                        server->serverClients[i].receiveBuffer, 
-                                        BufferSize)) <= 0)
-					{
-                        server->DisconnectClient(i);
-					} else {
-                        uint8_t data[valread];
-                        memcpy(data,server->serverClients[i].receiveBuffer,valread);
-                        server->HandelData(data, valread, i);
-                    }
+        for (int i = 1; i < MaxClients; i++)
+        {
+            if (FD_ISSET(server->serverClients[i].socket, &readfds))
+            {
+                //Check if it was for closing , and also read the incoming message
+                if ((valread = read(server->serverClients[i].socket, 
+                                    server->serverClients[i].receiveBuffer, 
+                                    BufferSize)) <= 0)
+                {
+                    server->DisconnectClient(i);
+                } else {
+                    uint8_t data[valread];
+                    memcpy(data,server->serverClients[i].receiveBuffer,valread);
+                    server->HandelData(data, valread, i);
                 }
             }
         }

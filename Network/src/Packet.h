@@ -29,7 +29,7 @@ public:
     void Write(std::string& value);
 
     uint8_t ReadByte();
-    uint8_t* ReadBytes(size_t length);
+    void ReadBytes(size_t length,uint8_t* value);
     int16_t ReadInt16();
     int32_t ReadInt32();
     int64_t ReadInt64();

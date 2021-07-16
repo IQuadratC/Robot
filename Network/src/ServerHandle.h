@@ -11,8 +11,11 @@ public:
     ServerHandle(Server* server);
     ~ServerHandle();
 
-    void ClientConnectionReceived(uint8_t,Packet*);
     void DebugMessage(uint8_t, Packet*);
+
+    void ClientSettings(uint8_t client, Packet* packet);
+    void ClientUDPConnection(uint8_t client, Packet* packet);
+    void ClientUDPConnectionStatus(uint8_t client, Packet* packet);
 
 private:
     Server* server;

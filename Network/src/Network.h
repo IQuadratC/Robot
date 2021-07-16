@@ -22,9 +22,16 @@
 #define MaxClients 255
 
 enum Packets{
-    serverConnection = 1,        
-    clientConnectionReceived = 2,
-    debugMessage = 3,
+    debugMessage = 1,
+
+    serverSettings = 2,  
+    clientSettings = 3,
+    serverStartUDP = 4,
+    clientUDPConnection = 5,
+    serverUDPConnection = 6,
+    clientUDPConnectionStatus = 7,
+
+    serverCamImage = 8,
 };
 
 enum NetworkState{

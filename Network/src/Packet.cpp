@@ -100,11 +100,13 @@ void Packet::Write(bool value){
     Write((uint8_t) value);
 }
 void Packet::Write(std::string& value){
-    Write((int) value.length());
+    int length = value.size();
+    Write(length);
 
-    for (size_t i = 0; i < value.length(); i++)
+    const char* text = value.c_str();
+    for (size_t i = 0; i < length; i++)
     {
-        Write(value[i]);
+       buffer.push_back(text[i]);
     }
 }
 
@@ -119,9 +121,8 @@ uint8_t Packet::ReadByte(){
     //TODO: Error
 }
 
-uint8_t* Packet::ReadBytes(size_t length){ 
+void Packet::ReadBytes(size_t length,uint8_t* value){ 
     
-    uint8_t value[length];
     if(buffer.size() > readPos){
     
         for (size_t i = 0; i < length; i++)
@@ -129,7 +130,6 @@ uint8_t* Packet::ReadBytes(size_t length){
             value[i] = buffer[readPos];
              readPos++;
         }
-        return value;
     }
     //TODO: Error
 }
@@ -204,7 +204,7 @@ float Packet::ReadFloat(){
 bool Packet::ReadBool(){
       if(buffer.size() > readPos){
     
-        float value = float(buffer[readPos]);
+        bool value = bool(buffer[readPos]);
         readPos++;
         return value;
     }
@@ -212,14 +212,12 @@ bool Packet::ReadBool(){
 }
 
 std::string Packet::ReadString(){
-
-    int length = ReadInt64();
+    int length = ReadInt32();
     if(buffer.size() > readPos){
-
-        uint8_t* bytes = ReadBytes(length);
-        std::string value( reinterpret_cast<char const*>(bytes), length );
+        uint8_t bytes[length];
+        ReadBytes(length,&bytes[0]);
+        std::string value((char*) bytes,length);
         readPos += length;
-
         return value;
     }
     //TODO: Error

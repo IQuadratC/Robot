@@ -14,8 +14,10 @@ struct ServerClient
     int socket = 0;
     char receiveBuffer[BufferSize]{0};
     struct sockaddr_in udpAdress{0}; 
-    bool udpReady = false;
     NetworkState state = NetworkState::notConnected;
+
+    bool updConnected;
+    bool clientUDPSupport = true;
 };
 
 class Server{
@@ -32,12 +34,14 @@ public:
     ServerClient serverClients[MaxClients];
     NetworkState serverState;
 
+    bool serverUDPSupport;
+
     Server();
     ~Server();
     void StartServer();
     void ConnectClient(uint8_t client);
 
-    uint8_t HandelData(uint8_t data[], size_t length, uint8_t client = 0);
+    void HandelData(uint8_t data[], size_t length, uint8_t client = 0);
 
     void AddHeaderToPacket(Packet* packet);
     void SendTCPData(uint8_t client, Packet* packet);
@@ -47,4 +51,5 @@ public:
 
     void DisconnectClient(uint8_t client);
     void StopServer();
+
 };

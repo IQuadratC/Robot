@@ -7,7 +7,7 @@
  }
  UDPServer::~UDPServer(){
 
- }
+}
 
 void UDPServer::StartUDP(){
     const int opt = 1;
@@ -48,7 +48,6 @@ void UDPServer::mainLoop()
         struct sockaddr_in clientAddress;
         addrlen = sizeof(clientAddress);
 
-        std::cout << "SERVER: udp idle" << std::endl;
         if(readlen = recvfrom(udpListener, buffer, BufferSize, 0, (struct sockaddr *) &clientAddress, (socklen_t*)&addrlen) < 0)
         {
             std::cout << "SERVER: no data recived" << std::endl;
@@ -58,22 +57,30 @@ void UDPServer::mainLoop()
             Packet* packet = new Packet((uint8_t*)buffer, BufferSize);
             readlen = packet->ReadInt32() + 4;
         }
+        int client;
+        std::string ip = inet_ntoa(clientAddress.sin_addr);
+        for (size_t i = 1; i < MaxClients; i++)
+        {
+            if (server->serverClients[i].ip == ip){
+                client = i;
+                if (!server->serverClients[client].updConnected){
+                    server->serverClients[client].udpAdress = clientAddress;
+                }
+                break;
+            }
+        }
 
-        std::cout << "SERVER: udp data recived Message legth: " << readlen << std::endl;
+        std::cout << "SERVER: [" << (int)client << "] udp data recived Message legth: " << readlen << std::endl;
+
 
         uint8_t data[readlen];
         memcpy(data, buffer, readlen);
-        uint8_t client = server->HandelData(data, readlen);
-
-        if (!server->serverClients[client].udpReady){
-            server->serverClients[client].udpAdress = clientAddress;
-            server->serverClients[client].udpReady = true;
-        }
+        server->HandelData(data, readlen, client);
     }
 }
 
 void UDPServer::SendUDPData(uint8_t client, uint8_t* data, size_t length){
-    if (!server->serverClients[client].udpReady){
+    if (!server->serverClients[client].updConnected){
         std::cout << "SERVER: UDP not setup." << std::endl;
         return;
     }
