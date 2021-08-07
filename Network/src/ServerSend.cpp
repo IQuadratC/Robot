@@ -1,6 +1,7 @@
 #include"ServerSend.h"
 #include "Server.h"
-
+#include <future>
+#include <chrono>
 ServerSend::ServerSend(Server *server) : server(server)
 {
     
@@ -34,14 +35,14 @@ void ServerSend::ServerStartUDP(uint8_t client){
 
     Packet* packet = new Packet((uint8_t) Packets::serverStartUDP);
     server->SendTCPData(client, packet);
-    /* TODO
-    Threader.RunAsync(() =>
-    {
-        Thread.Sleep(2000);
-        if (client.updConnected) {return;}
-        ServerUDPConnection(client, false);
-    });
-    */
+
+
+    std::async(std::launch::async,[&](){
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        if (!server->serverClients[client].updConnected){
+            ServerUDPConnection(client, false);
+        }
+    }); 
 }
 
 void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
