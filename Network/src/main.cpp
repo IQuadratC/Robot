@@ -86,7 +86,7 @@ void run() {
         logFPS(work_time);
         
         // Loop:
-        if (server.serverClients[1].updConnected){
+        if (server.serverClients[1].state == NetworkState::connected){
             
             int id = i % 255;
             i++;
