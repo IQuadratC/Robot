@@ -28,6 +28,7 @@ void ServerHandle::ClientSettings(uint8_t client, Packet* packet)
     }
     else
     {
+        std::cout << "SERVER: [" << (int)client << "] connection init done." << std::endl;
         server->serverClients[client].state = NetworkState::connected;
     }
    
@@ -42,4 +43,7 @@ void ServerHandle::ClientUDPConnectionStatus(uint8_t client, Packet* packet)
 {
     server->serverClients[client].updConnected = packet->ReadBool() && server->serverUDPSupport;
     std::cout << "SERVER: [" << (int)client << "] UDP connection status: " << server->serverClients[client].updConnected << std::endl;
+   
+    std::cout << "SERVER: [" << (int)client << "] connection init done." << std::endl;
+    server->serverClients[client].state = NetworkState::connected;
 }

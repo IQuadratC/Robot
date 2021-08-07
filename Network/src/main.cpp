@@ -28,7 +28,7 @@ void logFPS(std::chrono::duration<double, std::milli> work_time) {
 #ifdef DEBUG
     std::chrono::duration<double, std::milli> sleep_time = b - a;
 
-    printf("FPS: %.0f Possible: %0.f Work: %.4fms Sleep: %.4fms\n", fps, possibleFPS, work_time.count(), sleep_time.count());
+    //printf("FPS: %.0f Possible: %0.f Work: %.4fms Sleep: %.4fms\n", fps, possibleFPS, work_time.count(), sleep_time.count());
 #else
 
     printf("FPS: %.0f Possible: %.0f\n", fps, possibleFPS);
