@@ -217,7 +217,6 @@ std::string Packet::ReadString(){
         uint8_t bytes[length];
         ReadBytes(length,&bytes[0]);
         std::string value((char*) bytes,length);
-        readPos += length;
         return value;
     }
     //TODO: Error

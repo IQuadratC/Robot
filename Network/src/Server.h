@@ -17,7 +17,12 @@ struct ServerClient
     NetworkState state = NetworkState::notConnected;
 
     bool updConnected;
-    bool clientUDPSupport = true;
+    bool clientUDPSupport = false;
+
+    bool clientCamSupport = false;
+    bool clientJoyStickSupport = false;
+    bool clientChatSupport = false;
+    bool clientLidarSupport = false;
 };
 
 class Server{
@@ -34,7 +39,11 @@ public:
     ServerClient serverClients[MaxClients];
     NetworkState serverState;
 
-    bool serverUDPSupport;
+    bool serverUDPSupport = false;
+    bool serverCamSupport = false;
+    bool serverJoyStickSupport = false;
+    bool serverChatSupport = false;
+    bool serverLidarSupport = false;
 
     Server();
     ~Server();

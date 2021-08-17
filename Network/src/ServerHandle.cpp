@@ -19,8 +19,24 @@ void ServerHandle::DebugMessage(uint8_t client, Packet* packet)
 
 void ServerHandle::ClientSettings(uint8_t client, Packet* packet)
 {
-    std::cout << "SERVER: [" << (int)client << "] recived client settings" << std::endl;
-    server->serverClients[client].clientUDPSupport = packet->ReadBool();
+    std::string version = packet->ReadString();
+
+    if(version == "1.1"){
+        server->serverClients[client].clientUDPSupport = packet->ReadBool();
+        server->serverClients[client].clientCamSupport = packet->ReadBool();
+        server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
+        server->serverClients[client].clientChatSupport = packet->ReadBool();
+        server->serverClients[client].clientLidarSupport = packet->ReadBool();
+    }
+
+    std::cout << "SERVER: [" << (int)client << "] recived client settings:" <<
+    "\nVersion " << version <<
+    "\nUDP " << server->serverClients[client].clientUDPSupport <<
+    "\nCam " << server->serverClients[client].clientCamSupport <<
+    "\nJoystick " << server->serverClients[client].clientJoyStickSupport <<
+    "\nChat " << server->serverClients[client].clientChatSupport <<
+    "\nLidar " << server->serverClients[client].clientLidarSupport <<
+    std::endl;
 
     if (server->serverUDPSupport && server->serverClients[client].clientUDPSupport)
     {

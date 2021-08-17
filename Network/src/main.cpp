@@ -35,38 +35,9 @@ void logFPS(std::chrono::duration<double, std::milli> work_time) {
 #endif
 }
 
-u_char* createImage(int width, int height, int timestemp){
-    int bytesPerPixel = 3;
-    u_char* image = new unsigned char[width * height * bytesPerPixel];
-
-    // create a nice color transition (replace with your code)
-    for (auto y = 0; y < height; y++){
-        for (auto x = 0; x < width; x++)
-        {
-        // memory location of current pixel
-        auto offset = (y * width + x) * bytesPerPixel;
-
-        // red and green fade from 0 to 255, blue is always 127
-        image[offset    ] = 255 * x / width;
-        image[offset + 1] = 255 * y / height;
-        image[offset + 2] = timestemp % 255;
-        }
-    }
-    return image;
-}
-
 int i;
 
 void run() {
-
-    u_char* images[255];
-    int x = 100;
-    int y = 100;
-    for (size_t i = 0; i < 255; i++)
-    {
-        images[i] = createImage(x, y, i);
-    }
-
     while (true) {
         a = std::chrono::system_clock::now();
         std::chrono::duration<double, std::milli> work_time = a - b;
@@ -84,15 +55,6 @@ void run() {
         b = std::chrono::system_clock::now();
 
         logFPS(work_time);
-        
-        // Loop:
-        if (server.serverClients[1].state == NetworkState::connected){
-            
-            int id = i % 255;
-            i++;
-
-            server.serverSend->ServerCamImage(1, images[id], x, y);
-        }
     }
 }
 

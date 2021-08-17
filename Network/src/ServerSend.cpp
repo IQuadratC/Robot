@@ -20,13 +20,27 @@ void ServerSend::DebugMessage(std::string message){
 
 void ServerSend::ServerSettings(uint8_t client){
 
-    std::cout << "SERVER: [" << (int)client << "] sending settings" << std::endl;
+    std::string version = "1.1";
+    std::cout << "SERVER: [" << (int)client << "] sending settings:" <<
+    "\nVersion " << version <<
+    "\nUDP " << server->serverUDPSupport <<
+    "\nCam " << server->serverCamSupport <<
+    "\nJoystick " << server->serverJoyStickSupport <<
+    "\nChat " << server->serverChatSupport <<
+    "\nLidar " << server->serverLidarSupport <<
+    std::endl;
 
     Packet* packet = new Packet((uint8_t) Packets::serverSettings);
     packet->Write(client);
-    packet->Write(server->serverClients[client].clientUDPSupport);
-    server->SendTCPData(client, packet);
 
+    packet->Write(version);
+    packet->Write(server->serverUDPSupport);
+    packet->Write(server->serverCamSupport);
+    packet->Write(server->serverJoyStickSupport);
+    packet->Write(server->serverChatSupport);
+    packet->Write(server->serverLidarSupport);
+
+    server->SendTCPData(client, packet);
 }
 
 void ServerSend::ServerStartUDP(uint8_t client){
@@ -60,19 +74,4 @@ void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
     {
         server->SendTCPData(client, packet);
     }
-}
-
-Packet* packet;
-void camJepgOutput(unsigned char byte)
-{
-    packet->Write(byte);
-}
-
-void ServerSend::ServerCamImage(uint8_t client, u_char* data, int width, int height){
-
-    packet = new Packet((uint8_t) Packets::serverCamImage);
-
-    bool ok = TooJpeg::writeJpeg(camJepgOutput, data, width, height, true, 90, false, 0);
-
-    server->SendUDPData(client, packet);
 }

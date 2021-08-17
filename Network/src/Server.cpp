@@ -13,7 +13,6 @@ Server::Server(){
     packetHandlers.insert({(uint8_t)Packets::clientUDPConnectionStatus, &ServerHandle::ClientUDPConnectionStatus});
 
     serverState = NetworkState::notConnected;
-    serverUDPSupport = false;
 }
 
 Server::~Server(){

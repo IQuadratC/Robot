@@ -16,6 +16,7 @@ public:
     void ClientSettings(uint8_t client, Packet* packet);
     void ClientUDPConnection(uint8_t client, Packet* packet);
     void ClientUDPConnectionStatus(uint8_t client, Packet* packet);
+    
 
 private:
     Server* server;
