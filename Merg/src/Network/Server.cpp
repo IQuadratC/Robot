@@ -12,6 +12,10 @@ Server::Server(){
     packetHandlers.insert({(uint8_t)Packets::clientUDPConnection, &ServerHandle::ClientUDPConnection});
     packetHandlers.insert({(uint8_t)Packets::clientUDPConnectionStatus, &ServerHandle::ClientUDPConnectionStatus});
 
+    packetHandlers.insert({(uint8_t)Packets::clientGetSLAMMap, &ServerHandle::ClientGetSLAMMap});
+    packetHandlers.insert({(uint8_t)Packets::clientGetPosition, &ServerHandle::ClientGetPosition});
+    packetHandlers.insert({(uint8_t)Packets::clientSimulatedLidarData, &ServerHandle::ClientSimulatedLidarData});
+
     serverState = NetworkState::notConnected;
 }
 

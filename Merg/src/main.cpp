@@ -8,6 +8,7 @@
 #include "Robot/Roboter.h"
 #include "Robot/LedStripe.h"
 #include "Log.h"
+#include "SLAM/slam.h"
 
 Server server;
 Roboter roboter;
@@ -32,8 +33,5 @@ int main()
     robot.detach();
     std::this_thread::sleep_for(100ms);
 
-    while (true)
-    {
-        std::this_thread::sleep_for(1s);
-    }
+    RunSLAM();
 }

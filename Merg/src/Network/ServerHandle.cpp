@@ -63,3 +63,24 @@ void ServerHandle::ClientUDPConnectionStatus(uint8_t client, Packet* packet)
     std::cout << "SERVER: [" << (int)client << "] connection init done." << std::endl;
     server->serverClients[client].state = NetworkState::connected;
 }
+
+void ServerHandle::ClientSimulatedLidarData(uint8_t client, Packet* packet)
+{
+    float* data = new float[360];
+    for (size_t i = 0; i < 360; i++)
+    {
+        data[i] = packet->ReadFloat();
+    }
+
+
+}
+
+void ServerHandle::ClientGetSLAMMap(uint8_t client, Packet* packet)
+{
+    
+}
+
+void ServerHandle::ClientGetPosition(uint8_t client, Packet* packet)
+{
+   
+}
