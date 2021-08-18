@@ -14,14 +14,9 @@
             "command": "make clean"
         },
         {
-            "label": "runProjekt",
-            "type": "shell",
-            "command": "clear"
-        },
-        {
             "label": "preLaunch",
             "dependsOn": [
-                "runProjekt"
+                "makeProject"
             ]
         },
     ]

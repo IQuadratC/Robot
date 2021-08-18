@@ -8,6 +8,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS = -std=c++17  $(INC_FLAGS)
 LDFLAGS = -pthread -lspdlog -lpython3.6m -lstdc++fs
 
+
 debug: CPPFLAGS += -O0 -g -DDEBUG
 debug: clean Robot
 
@@ -18,12 +19,8 @@ run: CPPFLAGS += -Ofast
 run: clean Robot
 	sudo ./Robot
 
+all:
+	
+
 clean:
 	rm -f Robot
-
-close:
-	netstat -np
-	lsof -np 773
-	gdb -p 773
-	call close(11001)
-	quit
