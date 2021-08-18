@@ -9,7 +9,7 @@
 const char *moduleName = "ledStripe";
 const char *funktionName1 = "setPixel";
 const char *funktionName2 = "ledupdate";
-const char *importPath = "/mnt/c/Users/timja/Documents/Dev/WSL/Final/Python";
+const char *importPath = "./Python";
 
 namespace fs = std::experimental::filesystem;
 
