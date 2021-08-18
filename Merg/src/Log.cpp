@@ -1,6 +1,5 @@
 #include "Log.h"
 
-
 std::shared_ptr<spdlog::logger> Log::s_Logger;
 std::shared_ptr<spdlog::logger> Log::s_LidarLogger;
 std::shared_ptr<spdlog::logger> Log::s_RoboterLogger;

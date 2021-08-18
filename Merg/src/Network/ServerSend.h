@@ -2,7 +2,6 @@
 
 #include "Network.h"
 #include "Packet.h"
-#include "../vendor/toojpeg.h"
 
 class Server;
 
