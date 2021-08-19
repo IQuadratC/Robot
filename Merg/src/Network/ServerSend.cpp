@@ -2,6 +2,8 @@
 #include "Server.h"
 #include <future>
 #include <chrono>
+#include "../SLAM/slam.h"
+
 ServerSend::ServerSend(Server *server) : server(server)
 {
     
@@ -74,4 +76,38 @@ void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
     {
         server->SendTCPData(client, packet);
     }
+}
+
+void ServerSend::ServerGetimulatedLidarData(uint8_t client){
+
+    std::cout << "SERVER: [" << (int)client << "] request Lidar Data" << std::endl;
+
+    Packet* packet = new Packet((uint8_t) Packets::serverGetimulatedLidarData);
+
+    server->SendTCPData(client, packet);
+}
+
+void ServerSend::ServertSLAMMap(uint8_t client){
+
+    std::cout << "SERVER: [" << (int)client << "] request SLAM Map" << std::endl;
+
+    Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
+
+    
+
+    server->SendUDPData(client, packet);
+}
+
+void ServerSend::ServerPosition(uint8_t client){
+
+    std::cout << "SERVER: [" << (int)client << "] request Position" << std::endl;
+
+    Packet* packet = new Packet((uint8_t) Packets::serverPosition);
+
+    extern float pos[3];
+    packet->Write(pos[0]);
+    packet->Write(pos[1]);
+    packet->Write(pos[2]);
+
+    server->SendUDPData(client, packet);
 }
