@@ -1,7 +1,7 @@
 #include "Server.h"
 
 Server::Server(){ 
-    
+    Log::Init();
     tcpServer = new TCPServer(this);
     udpServer = new UDPServer(this);
     serverHandle = new ServerHandle(this);
@@ -16,6 +16,11 @@ Server::Server(){
     packetHandlers.insert({(uint8_t)Packets::clientGetPosition, &ServerHandle::ClientGetPosition});
     packetHandlers.insert({(uint8_t)Packets::clientSimulatedLidarData, &ServerHandle::ClientSimulatedLidarData});
 
+    packetHandlers.insert({(uint8_t)Packets::clientControllMode, &ServerHandle::ClientGetSLAMMap});
+    packetHandlers.insert({(uint8_t)Packets::clientJoystickMove, &ServerHandle::ClientGetSLAMMap});
+    packetHandlers.insert({(uint8_t)Packets::clientJoystickRotate, &ServerHandle::ClientGetPosition});
+    packetHandlers.insert({(uint8_t)Packets::clientJoystickStop, &ServerHandle::ClientSimulatedLidarData});
+
     serverState = NetworkState::notConnected;
 }
 
@@ -28,9 +33,12 @@ Server::~Server(){
 
 
 void Server::StartServer(){
+
+    Logger = Log::GetNetworkLogger();
+
     if (serverState != NetworkState::notConnected) return;
 
-    printf( "SERVER: Starting...\n");
+    Logger->info("Starting...");
     //std::cout << "SERVER: Starting..." << std::endl;
     serverState = NetworkState::connecting;
 
@@ -41,15 +49,14 @@ void Server::StartServer(){
         std::thread t2(&UDPServer::StartUDP, udpServer);
         t2.detach();
     }
-    
-    std::cout << "SERVER: Started" << std::endl;
+
+    Logger->info("Started");
     serverState = NetworkState::connected;
 }
 
 void Server::ConnectClient(uint8_t client){
 
-    std::cout << "SERVER: Connecting Client " << (int) serverClients[client].id << "..." << std::endl;
-
+    Logger->info("Connecting Client {0}...",(int) serverClients[client].id);
     serverClients[client].state = NetworkState::connecting;
     serverSend->ServerSettings(client);
 }
@@ -124,8 +131,8 @@ void Server::DisconnectClient(uint8_t client){
 }
 
 void Server::StopServer(){
-    std::cout << "SERVER: Stop Server:..." << std::endl;
 
+    Logger->info("Stop Server:...");
     for (uint8_t i = 0; i < MaxClients; i++)
     {
         if (serverClients[i].socket != 0){
@@ -136,5 +143,5 @@ void Server::StopServer(){
     tcpServer->StoptTCP();
     udpServer->StopUDP();
 
-    std::cout << "SERVER: Stopped" << std::endl;
+    Logger->info("Stopped");
 }

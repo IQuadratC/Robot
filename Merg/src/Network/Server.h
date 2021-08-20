@@ -61,4 +61,7 @@ public:
     void DisconnectClient(uint8_t client);
     void StopServer();
 
+private:
+    std::shared_ptr<spdlog::logger> Logger;
+
 };

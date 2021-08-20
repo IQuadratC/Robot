@@ -13,5 +13,6 @@ void Log::Init()
 	s_LidarLogger = spdlog::stdout_color_mt("Lidar");
 	s_RoboterLogger = spdlog::stdout_color_mt("Roboter");
 	s_NetworkLogger = spdlog::stdout_color_mt("Network");
+	s_Logger->warn("Initialized Log!");
 }
 
