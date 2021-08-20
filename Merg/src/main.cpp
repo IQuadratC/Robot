@@ -7,31 +7,32 @@
 #include "Network/Server.h"
 #include "Robot/Roboter.h"
 #include "Robot/LedStripe.h"
-#include "Log.h"
 #include "SLAM/slam.h"
+#include "Log.h"
 
 Server server;
 Roboter roboter;
+LedStripe ledstripe(102);
+
 void signalhandler(int sig)
 {
     signal(sig, SIG_IGN);
+    Log::GetLogger()->warn("Shutdown Program");
     server.StopServer();
-    roboter.stop();
+    roboter.Stop();
+    ledstripe.Stop();
     exit(0);
 }
 
 int main()
 {
-    using namespace std::chrono_literals;
     signal(SIGINT, signalhandler);
-    Log::Init();
-    Log::GetLogger()->warn("Initialized Log!");
-
-    LedStripe ledstripe(102);
     server.StartServer();
-    std::thread robot(&Roboter::start,&roboter);
-    robot.detach();
-    std::this_thread::sleep_for(100ms);
-
+    Log::GetLogger()->info("Start Robot!");
+    roboter.Start();
+    Log::GetLogger()->info("Start LedStripe");
+    ledstripe.Start();
+    ledstripe.Do_command(commands_led::setArray);
+    Log::GetLogger()->info("Start SLAM");
     RunSLAM();
 }

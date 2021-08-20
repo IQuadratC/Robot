@@ -19,8 +19,5 @@ run: CPPFLAGS += -Ofast
 run: clean Robot
 	sudo ./Robot
 
-all:
-	
-
 clean:
 	rm -f Robot

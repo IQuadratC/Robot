@@ -10,7 +10,8 @@ enum commands
 	move,
 	rotate,
 	stop,
-	getBettery
+	getBettery,
+	setMode
 };
 
 class Roboter
@@ -29,29 +30,30 @@ public:
 	Roboter();
 	~Roboter();
 
-	void start();
-	void do_command(commands commands);
-	void stop();
+	void Start();
+	void Do_command(commands commands);
+	void Stop();
 	Data data;
 
 private:
-	bool run = false;
+	bool stop = false;
 	struct Flags
 	{
-		bool move = false;
-		bool rotate = false;
-		bool stop = false;
-		bool getBettery = false;
+		bool move :1;
+		bool rotate : 1;
+		bool stop :1;
+		bool getBettery :1;
 	};
 	
+	int RoboterMode = 1;
 
-	Flags flags;
-	Flags thread_flags;
-	Data thread_data;
+	Flags flags = {false,false,false,false};
+
 	std::mutex mutex;
 	std::condition_variable cv;
 	bool ready = false;
-	bool processed = true;
+
+	void Mainloop();
 
 	void moveRobot(float x, float y, float Speed);
 	void rotateRobot(float speed);

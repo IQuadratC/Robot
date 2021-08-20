@@ -32,9 +32,20 @@ Roboter::~Roboter()
 	close(serial_port);
 }
 
-static bool newdata = true;
+void Roboter::Start()
+{
+	std::thread robot(&Roboter::Mainloop,this);
+	robot.detach();
+}
 
-void Roboter::start()
+void Roboter::Stop()
+{
+	ready = true;
+	stop = true;
+	cv.notify_one();
+}
+
+void Roboter::Mainloop()
 {
 	StartSerial();
 	Log::GetRoboterLogger()->warn("Initialized Roboter Log!");
@@ -43,11 +54,11 @@ void Roboter::start()
 	{
 		auto start_Robot = std::chrono::high_resolution_clock::now();
 		std::unique_lock<std::mutex> lk(mutex);
-		cv.wait(lk, [&](){ return ready || run; });
-		if (run) break;
+		cv.wait(lk, [&](){ return ready || stop; });
+		if (stop) break;
 		Logger->info("Save Data");
-		thread_data = data;
-		thread_flags = flags;
+		Flags thread_flags = flags;
+		Data thread_data = data;
 		ready = false;
 		lk.unlock();
 
@@ -75,20 +86,16 @@ void Roboter::start()
 	}
 }
 
-void Roboter::stop()
-{
-	ready = true;
-	run = true;
-	cv.notify_one();
-}
-
-void Roboter::do_command(commands commands)
+void Roboter::Do_command(commands commands)
 {
 	ready = true;
 	std::unique_lock<std::mutex> lk(mutex);
 
 	switch (commands)
 	{
+	case commands::setMode:
+		
+		break;
 	case commands::move:
 		flags.move = true;
 		break;

@@ -2,63 +2,76 @@
 #include <python3.6/Python.h>
 #include <unordered_map>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
+
 struct RGB
 {
-    float r;
-    float g;
-    float b;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
 };
-
 enum commands_led
 {
-    setLed,
     setArray,
     turnOFF,
+    animation,
 };
+
+
 
 class LedStripe
 {
-private:
+
 public:
     LedStripe(uint32_t numLeds);
     ~LedStripe();
 
-    RGB pixelData[102];
+    struct LedData{
+        RGB pixelData[102];
+        int animationindex = 0;
+    }data;
 
-    void start();
-    void do_command(commands_led commands);
+    void Start();
+    void Stop();
+    void Do_command(commands_led commands);
 
 private:
-    struct RGB_DATA
-    {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-    };
-
     PyObject *pyfunktion1 = nullptr;
     PyObject *pyfunktion2 = nullptr;
+
     uint32_t numLeds = 0;
+
+    bool ready = false;
+    bool stop = false;
 
     struct Flags
     {
-        bool setLed : 1;
         bool setArray : 1;
-        bool rainbow : 1;
         bool trunOFF : 1;
+        bool animation : 1;
     };
-    Flags flags = {false, false, false, false};
-    Flags thread_flags = {false, false, false, false};
 
-    RGB HSVtoRGB(float h, float s, float v);
+    Flags flags = {false, false, false};
+    Flags thread_flags = {false, false, false};
 
+    LedData thread_data;
+    
+    void MainLoop();
     void setLed(int p, RGB rgb);
+    void setLedArray(RGB *data);
     void update();
     void rainbow(int delay);
     void light(int delay);
     void ReadAnimationData();
+    void PlayAnimation(int index);
+
+    RGB HSVtoRGB(float h, float s, float v);
 
     int filecounter = 0;
 
-    std::unordered_map<int, std::vector<RGB_DATA *>> animtions;
+    std::mutex mutex;
+    std::condition_variable cv;
+
+    std::unordered_map<int, std::vector<RGB*>> animtions;
 };
