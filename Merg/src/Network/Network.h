@@ -63,6 +63,8 @@ serverPosition = 55,
 serverGetimulatedLidarData = 60,
 clientSimulatedLidarData = 61,
 
+// LedStripe 70 - 79
+
 };
 
 enum NetworkState{

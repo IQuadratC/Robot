@@ -6,10 +6,10 @@ INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS = -std=c++17  $(INC_FLAGS)
-LDFLAGS = -pthread -lspdlog -lpython3.6m -lstdc++fs
+LDFLAGS = -pthread -lspdlog -lpython3.6m -lstdc++fs -lrplidar_sdk
 
 
-debug: CPPFLAGS += -O0 -g -DDEBUG
+debug: CPPFLAGS += -O0 -g -DDEBUG -L./vendor
 debug: clean Robot
 
 Robot:

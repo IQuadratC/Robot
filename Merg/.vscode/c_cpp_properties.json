@@ -4,7 +4,8 @@
             "name": "linux-gcc-arm",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include"
+                "/usr/include",
+                "${workspaceFolder}/vendor/rplidar"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
