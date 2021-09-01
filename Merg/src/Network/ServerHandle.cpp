@@ -1,6 +1,7 @@
 #include "ServerHandle.h"
 #include "Server.h"
 #include "../Robot/Roboter.h"
+#include "../SLAM/slam.h"
 
 #include <sstream>
 
@@ -31,6 +32,13 @@ void ServerHandle::ClientSettings(uint8_t client, Packet* packet)
         server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
         server->serverClients[client].clientChatSupport = packet->ReadBool();
         server->serverClients[client].clientLidarSupport = packet->ReadBool();
+    }else if(version == "1.2"){
+        server->serverClients[client].clientUDPSupport = packet->ReadBool();
+        server->serverClients[client].clientCamSupport = packet->ReadBool();
+        server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
+        server->serverClients[client].clientChatSupport = packet->ReadBool();
+        server->serverClients[client].clientLidarSupport = packet->ReadBool();
+        server->serverClients[client].clientLidarSimSupport = packet->ReadBool();
     }
 
     std::stringstream ss;
@@ -40,7 +48,8 @@ void ServerHandle::ClientSettings(uint8_t client, Packet* packet)
     "\nCam " << server->serverClients[client].clientCamSupport <<
     "\nJoystick " << server->serverClients[client].clientJoyStickSupport <<
     "\nChat " << server->serverClients[client].clientChatSupport <<
-    "\nLidar " << server->serverClients[client].clientLidarSupport;
+    "\nLidar " << server->serverClients[client].clientLidarSupport <<
+    "\nLidarSim " << server->serverClients[client].clientLidarSimSupport;
 
     Logger->info(ss.str().c_str());
 
@@ -75,11 +84,20 @@ void ServerHandle::ClientUDPConnectionStatus(uint8_t client, Packet* packet)
 
 void ServerHandle::ClientSimulatedLidarData(uint8_t client, Packet* packet)
 {
-    float* data = new float[360];
-    for (size_t i = 0; i < 360; i++)
+    int lenght = packet->ReadInt32();
+    if (lenght!=360){
+        Logger->error("ClientSimulatedLidarData did not contain exactly 360 entrys.");
+        return;
+    }
+
+    float data[360];
+    for (size_t i = 0; i < lenght; i++)
     {
         data[i] = packet->ReadFloat();
     }
+    Logger->info("Recived Simulated Data");
+
+    LidarData(data);
 }
 
 void ServerHandle::ClientGetSLAMMap(uint8_t client, Packet* packet)
@@ -113,4 +131,8 @@ void ServerHandle::ClientJoystickRotate(uint8_t client, Packet* packet)
     roboter.Do_command(commands::rotate);
 }
 
-void ServerHandle::ClientJoystickStop(uint8_t client, Packet* packet) {roboter.Do_command(commands::stop);}
+void ServerHandle::ClientJoystickStop(uint8_t client, Packet* packet) {
+    roboter.Do_command(commands::stop);
+}
+
+

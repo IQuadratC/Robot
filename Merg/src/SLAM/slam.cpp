@@ -1,18 +1,28 @@
 #include "slam.h"
+#include "Log.h"
+#include "../Network/Network.h"
+#include "../Network/ServerSend.h"
 
 #include <thread>
 #include <chrono>
 #include <iostream>
+
 float* lidarDataPolar;
 float pos[3];
-//uint8_t* 
 
-void RunSLAM()
+
+std::shared_ptr<spdlog::logger> Logger;
+
+void RunSLAM(Server* server)
 {
+    Logger = Log::GetLidarLogger();
+
     while (true)
     {
-        std::cout << "Test" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        if (server->serverClients[1].state == NetworkState::notConnected){
+            server->serverSend->ServerGetSimulatedLidarData(1);
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 }
 

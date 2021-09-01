@@ -20,6 +20,8 @@ public:
     void ServertSLAMMap(uint8_t client);
     void ServerPosition(uint8_t client);
 
+    void ServerGetSimulatedLidarData(uint8_t client);
+
 private:
     Server* server;
 };

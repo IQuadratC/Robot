@@ -34,5 +34,5 @@ int main()
     ledstripe.Start();
     ledstripe.Do_command(commands_led::setArray);
     Log::GetLogger()->info("Start SLAM");
-    RunSLAM();
+    RunSLAM(&server);
 }

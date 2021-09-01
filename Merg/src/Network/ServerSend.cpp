@@ -22,7 +22,7 @@ void ServerSend::DebugMessage(std::string message){
 
 void ServerSend::ServerSettings(uint8_t client){
 
-    std::string version = "1.1";
+    std::string version = "1.2";
     std::cout << "SERVER: [" << (int)client << "] sending settings:" <<
     "\nVersion " << version <<
     "\nUDP " << server->serverUDPSupport <<
@@ -30,6 +30,7 @@ void ServerSend::ServerSettings(uint8_t client){
     "\nJoystick " << server->serverJoyStickSupport <<
     "\nChat " << server->serverChatSupport <<
     "\nLidar " << server->serverLidarSupport <<
+    "\nLidarSim " << server->serverLidarSimSupport <<
     std::endl;
 
     Packet* packet = new Packet((uint8_t) Packets::serverSettings);
@@ -41,6 +42,7 @@ void ServerSend::ServerSettings(uint8_t client){
     packet->Write(server->serverJoyStickSupport);
     packet->Write(server->serverChatSupport);
     packet->Write(server->serverLidarSupport);
+    packet->Write(server->serverLidarSimSupport);
 
     server->SendTCPData(client, packet);
 }
@@ -82,7 +84,7 @@ void ServerSend::ServerGetimulatedLidarData(uint8_t client){
 
     std::cout << "SERVER: [" << (int)client << "] request Lidar Data" << std::endl;
 
-    Packet* packet = new Packet((uint8_t) Packets::serverGetimulatedLidarData);
+    Packet* packet = new Packet((uint8_t) Packets::serverGetSimulatedLidarData);
 
     server->SendTCPData(client, packet);
 }
@@ -92,8 +94,6 @@ void ServerSend::ServertSLAMMap(uint8_t client){
     std::cout << "SERVER: [" << (int)client << "] request SLAM Map" << std::endl;
 
     Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
-
-    
 
     server->SendUDPData(client, packet);
 }

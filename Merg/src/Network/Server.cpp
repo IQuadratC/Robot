@@ -21,6 +21,8 @@ Server::Server(){
     packetHandlers.insert({(uint8_t)Packets::clientJoystickRotate, &ServerHandle::ClientGetPosition});
     packetHandlers.insert({(uint8_t)Packets::clientJoystickStop, &ServerHandle::ClientSimulatedLidarData});
 
+    packetHandlers.insert({(uint8_t)Packets::clientSimulatedLidarData, &ServerHandle::ClientSimulatedLidarData});
+
     serverState = NetworkState::notConnected;
 }
 

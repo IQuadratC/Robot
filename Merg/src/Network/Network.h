@@ -60,7 +60,7 @@ clientGetPosition = 54,
 serverPosition = 55,
 
 // Lidar Sim 60 - 69
-serverGetimulatedLidarData = 60,
+serverGetSimulatedLidarData = 60,
 clientSimulatedLidarData = 61,
 
 // LedStripe 70 - 79

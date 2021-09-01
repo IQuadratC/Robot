@@ -1,4 +1,5 @@
 #pragma once
+#include "../Network/Server.h"
 
-void RunSLAM();
-void LidarData();
+void RunSLAM(Server* server);
+void LidarData(float* data);

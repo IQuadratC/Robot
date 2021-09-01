@@ -18,11 +18,11 @@ struct ServerClient
 
     bool updConnected;
     bool clientUDPSupport = false;
-
     bool clientCamSupport = false;
     bool clientJoyStickSupport = false;
     bool clientChatSupport = false;
     bool clientLidarSupport = false;
+    bool clientLidarSimSupport = false;
 };
 
 class Server{
@@ -44,6 +44,7 @@ public:
     bool serverJoyStickSupport = false;
     bool serverChatSupport = false;
     bool serverLidarSupport = false;
+    bool serverLidarSimSupport = true;
 
     Server();
     ~Server();
