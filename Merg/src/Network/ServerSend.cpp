@@ -80,7 +80,7 @@ void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
     }
 }
 
-void ServerSend::ServerGetimulatedLidarData(uint8_t client){
+void ServerSend::ServerGetSimulatedLidarData(uint8_t client){
 
     std::cout << "SERVER: [" << (int)client << "] request Lidar Data" << std::endl;
 
