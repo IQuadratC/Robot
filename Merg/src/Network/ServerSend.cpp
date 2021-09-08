@@ -1,12 +1,10 @@
 #include"ServerSend.h"
 #include "Server.h"
-#include <future>
-#include <chrono>
 #include "../SLAM/slam.h"
 
 ServerSend::ServerSend(Server *server) : server(server)
 {
-    
+    Logger = Log::GetNetworkLogger();
 }
 ServerSend::~ServerSend(){
 
@@ -23,15 +21,16 @@ void ServerSend::DebugMessage(std::string message){
 void ServerSend::ServerSettings(uint8_t client){
 
     std::string version = "1.2";
-    std::cout << "SERVER: [" << (int)client << "] sending settings:" <<
+
+    std::stringstream ss;
+    ss << "[" << (int)client << "] sending settings:" <<
     "\nVersion " << version <<
     "\nUDP " << server->serverUDPSupport <<
     "\nCam " << server->serverCamSupport <<
     "\nJoystick " << server->serverJoyStickSupport <<
     "\nChat " << server->serverChatSupport <<
     "\nLidar " << server->serverLidarSupport <<
-    "\nLidarSim " << server->serverLidarSimSupport <<
-    std::endl;
+    "\nLidarSim " << server->serverLidarSimSupport;
 
     Packet* packet = new Packet((uint8_t) Packets::serverSettings);
     packet->Write(client);
@@ -49,7 +48,7 @@ void ServerSend::ServerSettings(uint8_t client){
 
 void ServerSend::ServerStartUDP(uint8_t client){
 
-    std::cout << "SERVER: [" << (int)client << "] starting udp test" << std::endl;
+    Logger->info("[{0}] starting udp test", (int)client );
 
     Packet* packet = new Packet((uint8_t) Packets::serverStartUDP);
     server->SendTCPData(client, packet);
@@ -65,7 +64,7 @@ void ServerSend::ServerStartUDP(uint8_t client){
 
 void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
 
-    std::cout << "SERVER: [" << (int)client << "] udp test message" << std::endl;
+    Logger->info("[{0}] udp test message", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::serverUDPConnection);
     packet->Write(recived);
@@ -82,7 +81,7 @@ void ServerSend::ServerUDPConnection(uint8_t client, bool recived){
 
 void ServerSend::ServerGetSimulatedLidarData(uint8_t client){
 
-    std::cout << "SERVER: [" << (int)client << "] request Lidar Data" << std::endl;
+    Logger->info("[{0}] request Lidar Data", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::serverGetSimulatedLidarData);
 
@@ -91,7 +90,7 @@ void ServerSend::ServerGetSimulatedLidarData(uint8_t client){
 
 void ServerSend::ServertSLAMMap(uint8_t client){
 
-    std::cout << "SERVER: [" << (int)client << "] request SLAM Map" << std::endl;
+    Logger->info("[{0}] request SLAM Map", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
 
@@ -100,7 +99,7 @@ void ServerSend::ServertSLAMMap(uint8_t client){
 
 void ServerSend::ServerPosition(uint8_t client){
 
-    std::cout << "SERVER: [" << (int)client << "] request Position" << std::endl;
+    Logger->info("[{0}] request Position", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::serverPosition);
 

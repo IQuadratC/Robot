@@ -3,14 +3,11 @@
 #include "../Robot/Roboter.h"
 #include "../SLAM/slam.h"
 
-#include <sstream>
-
 
 ServerHandle::ServerHandle(Server *server) : server(server)
 {
     Logger = Log::GetNetworkLogger();
 }
-
 ServerHandle::~ServerHandle()
 {
     

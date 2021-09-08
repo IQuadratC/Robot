@@ -4,7 +4,7 @@
 
 TCPServer::TCPServer(Server *server) : server(server)
 {
-    
+    Logger = Log::GetNetworkLogger();
 }
 TCPServer::~TCPServer(){
 
@@ -17,13 +17,13 @@ void TCPServer::StartTCP()
 
     if ((tcpListener = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
-        std::cout << "SERVER: socket failed" << std::endl;
+        Logger->error("SERVER: TCP socket failed");
         exit(EXIT_FAILURE);
     }
 
     if (setsockopt(tcpListener, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
     {
-        std::cout << "SERVER: setsockopt" << std::endl;
+        Logger->error("SERVER: TCP setsockopt");
         exit(EXIT_FAILURE);
     }
     address.sin_family = AF_INET;
@@ -32,13 +32,13 @@ void TCPServer::StartTCP()
 
     if (bind(tcpListener, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        std::cout << "SERVER: bind failed" << std::endl;
+        Logger->error("SERVER: TCP bind failed");
         exit(EXIT_FAILURE);
     }
 
     if (listen(tcpListener, MaxClients) < 0)
     {
-        std::cout << "SERVER: listen" << std::endl;
+        Logger->info("SERVER: listen");
         exit(EXIT_FAILURE);
         
     }
@@ -71,7 +71,7 @@ void TCPServer::mainLoop()
 
         if ((activity < 0) && (errno != EINTR))
 
-            std::cout << "SERVER: select error" << std::endl;
+            Logger->error("SERVER: select error");
 
         if (FD_ISSET(tcpListener, &readfds))
         {
@@ -81,7 +81,7 @@ void TCPServer::mainLoop()
                 //TODO: Error
             }
 
-            std::cout << "SERVER: Incoming connection from " << inet_ntoa(address.sin_addr) << std::endl;
+            Logger->info("SERVER: Incoming connection from {0}", inet_ntoa(address.sin_addr));
 
             for (uint8_t i = 1; i < MaxClients; i++)
             {
@@ -127,7 +127,7 @@ void TCPServer::SendTCPData(uint8_t client, unsigned char *data, std::size_t len
 void TCPServer::DisconnectTCP(uint8_t client){
     getpeername(server->serverClients[client].socket, (struct sockaddr*)&address, (socklen_t*)&addrlen);
     
-    std::cout << "Client disconnected , ip " << inet_ntoa(address.sin_addr) << ", port " << ntohs(address.sin_port) << std::endl;
+    Logger->info("Client disconnected, ip {0}, {1}", inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
     //Close the socket and mark as 0 in list for reuse
     close(server->serverClients[client].socket);

@@ -25,4 +25,6 @@ private:
     int addrlen;
     ssize_t readlen;
     char buffer[BufferSize];
+
+    std::shared_ptr<spdlog::logger> Logger;
 };

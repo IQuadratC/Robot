@@ -2,7 +2,6 @@
 
 #include "Network.h"
 #include "Packet.h"
-#include "../Log.h"
 
 class Server;
 

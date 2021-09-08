@@ -41,7 +41,6 @@ void Server::StartServer(){
     if (serverState != NetworkState::notConnected) return;
 
     Logger->info("Starting...");
-    //std::cout << "SERVER: Starting..." << std::endl;
     serverState = NetworkState::connecting;
 
     std::thread t1(&TCPServer::StartTCP, tcpServer);
@@ -134,7 +133,7 @@ void Server::DisconnectClient(uint8_t client){
 
 void Server::StopServer(){
 
-    Logger->info("Stop Server:...");
+    Logger->info("Stopping...");
     for (uint8_t i = 0; i < MaxClients; i++)
     {
         if (serverClients[i].socket != 0){

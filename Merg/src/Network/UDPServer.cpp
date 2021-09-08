@@ -2,10 +2,10 @@
 
 #include "Server.h"
 
- UDPServer::UDPServer(Server* server) : server(server){
-
- }
- UDPServer::~UDPServer(){
+UDPServer::UDPServer(Server* server) : server(server){
+    Logger = Log::GetNetworkLogger();
+}
+UDPServer::~UDPServer(){
 
 }
 
@@ -16,7 +16,7 @@ void UDPServer::StartUDP(){
 
     if ((udpListener = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
-        std::cout << "SERVER: socket failed" << std::endl;
+        Logger->error("SERVER: UDP socket failed");
         exit(EXIT_FAILURE);
     }
 
@@ -26,13 +26,13 @@ void UDPServer::StartUDP(){
 
     if (setsockopt(udpListener, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0){
 
-        std::cout << "SERVER: setsockopt failed" << std::endl;
+        Logger->error("SERVER: UDP setsockopt failed");
         exit(EXIT_FAILURE);
     }
 
     if (bind(udpListener, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        std::cout << "SERVER: bind failed" << std::endl;
+        Logger->error("SERVER: UDP bind failed");
         exit(EXIT_FAILURE);
     }
 
@@ -50,7 +50,7 @@ void UDPServer::mainLoop()
 
         if(readlen = recvfrom(udpListener, buffer, BufferSize, 0, (struct sockaddr *) &clientAddress, (socklen_t*)&addrlen) < 0)
         {
-            std::cout << "SERVER: no data recived" << std::endl;
+            Logger->warn("SERVER: TCP no data recived");
             continue;
         }
         if (readlen == 0){
@@ -70,8 +70,7 @@ void UDPServer::mainLoop()
             }
         }
 
-        std::cout << "SERVER: [" << (int)client << "] udp data recived Message legth: " << readlen << std::endl;
-
+        Logger->info("SERVER: [{0}] udp data recived Message legth: {1}", (int)client, readlen);
 
         uint8_t data[readlen];
         memcpy(data, buffer, readlen);
@@ -81,13 +80,13 @@ void UDPServer::mainLoop()
 
 void UDPServer::SendUDPData(uint8_t client, uint8_t* data, size_t length){
     if (!server->serverClients[client].updConnected){
-        std::cout << "SERVER: UDP not setup." << std::endl;
+        Logger->error("SERVER: UDP not setup");
         return;
     }
 
     if(sendto(udpListener, data, length, 0, (sockaddr*)&server->serverClients[client].udpAdress, sizeof(server->serverClients[client].udpAdress)) < 0)
     {
-        std::cout << "SERVER: UDP send error" << std::endl;
+        Logger->error("SERVER: UDP send error");
     }
 }
 void UDPServer::DisconnectUDP(uint8_t client){

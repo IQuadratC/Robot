@@ -14,7 +14,7 @@ public:
     void mainLoop();
     void DisconnectTCP(uint8_t client);
     void SendTCPData(uint8_t client, unsigned char* data, std::size_t length);
-     void StoptTCP();
+    void StoptTCP();
     
 private:
     int tcpListener;
@@ -25,6 +25,8 @@ private:
     struct sockaddr_in address;
     int addrlen;
     char buffer[BufferSize]{0};
+
+    std::shared_ptr<spdlog::logger> Logger;
 };
 
 

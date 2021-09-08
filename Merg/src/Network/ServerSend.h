@@ -23,4 +23,6 @@ public:
 
 private:
     Server* server;
+    
+    std::shared_ptr<spdlog::logger> Logger;
 };

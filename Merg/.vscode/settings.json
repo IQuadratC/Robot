@@ -108,7 +108,10 @@
     "iomanip": "cpp",
     "variant": "cpp",
     "filesystem": "cpp",
-    "codecvt": "cpp"
+    "codecvt": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp",
+    "valarray": "cpp"
   },
   "C_Cpp_Runner.warnings": [],
   "C_Cpp_Runner.compilerArgs": [],

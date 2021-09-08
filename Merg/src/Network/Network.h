@@ -16,6 +16,11 @@
 #include <map>
 #include <thread>
 #include <functional>
+#include <sstream>
+#include <future>
+#include <chrono>
+
+#include "../Log.h"
 
 #define BufferSize 4096
 #define PORT 11001
