@@ -28,5 +28,10 @@ void RunSLAM(Server* server)
 void LidarData(float* data)
 {
     lidarDataPolar = data;
+    
+    for (size_t i = 0; i < 360; i++)
+    {
+        Logger->info("{0}, {1}", i, lidarDataPolar[i]);
+    }
 }
 

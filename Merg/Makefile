@@ -6,7 +6,7 @@ INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS = -std=c++17  $(INC_FLAGS)
-LDFLAGS = -pthread -lspdlog -lpython3.9 -lstdc++fs -lrplidar_sdk -I/usr/include/python3.9 
+LDFLAGS = -pthread -lspdlog -lpython3.6m -lstdc++fs -lrplidar_sdk -I/usr/include/python3.6 
 
 
 debug: CPPFLAGS += -O0 -g -DDEBUG -L./vendor

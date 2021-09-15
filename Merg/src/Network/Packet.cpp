@@ -218,15 +218,16 @@ float Packet::ReadFloat()
 {
     if (buffer.size() > readPos)
     {
-
-        float value = float(
-            buffer[readPos + 3] << 24 |
-            buffer[readPos + 2] << 16 |
-            buffer[readPos + 1] << 8 |
-            buffer[readPos + 0]);
-
-        readPos += 4;
-        return value;
+        union
+        {
+            float a;
+            uint8_t bytes[4];
+        } data;
+        data.bytes[0] = ReadByte();
+        data.bytes[1] = ReadByte();
+        data.bytes[2] = ReadByte();
+        data.bytes[3] = ReadByte();
+        return data.a;
     }
     //TODO: Error
 }

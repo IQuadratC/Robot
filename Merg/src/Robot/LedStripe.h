@@ -1,5 +1,5 @@
 #pragma once
-#include <python3.9/Python.h>
+#include <python3.6/Python.h>
 #include <unordered_map>
 #include <vector>
 #include <mutex>
