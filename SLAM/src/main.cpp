@@ -87,10 +87,20 @@ glm::vec3 func12(glm::vec3 E){
         glm::vec2 pos = func8(E, points[i]);
 
         glm::mat2x3 mat0 = func56(pos) * func14(E, points[i]);
-        glm::mat3x2 mat1 = glm::transpose(mat0);
+        glm::mat3x2 mat1;
+        mat1[0][0] = mat0[0][0];
+        mat1[0][1] = mat0[1][0];
+        mat1[1][0] = mat0[0][1];
+        mat1[1][1] = mat0[1][1];
+        mat1[2][0] = mat0[0][2];
+        mat1[2][1] = mat0[1][2];
+
+        glm::mat2x2 mat2 = mat1 * mat0;
+
+        glm::mat2x2 mat3 = glm::inverse(mat2);
+
 
     }
-    
 }
 
 int main(){
@@ -105,7 +115,7 @@ int main(){
 
     func14(glm::vec3(0,0,0),  glm::vec2(1,1));
 
-    func12(glm::vec3(0.5,0.5,1));
+    func12(glm::vec3(0.2,0.7,1));
 
     return 0;
 }
