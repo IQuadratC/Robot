@@ -11,6 +11,46 @@ float mapData[MAPSIZE * MAPSIZE];
 
 glm::vec2 points[POINTSSIZE];
 
+struct mat1x2
+{ 
+    float x;
+    float y;
+
+    mat1x2(float x, float y) : x(x), y(y) {};
+};
+
+struct mat1x3
+{ 
+    float x;
+    float y;
+    float z;
+
+    mat1x3(float x, float y, float z) : x(x), y(y), z(z) {};
+};
+
+inline mat1x2 transpose(glm::vec2 a){
+    return mat1x2(a.x, a.y);
+}
+
+inline glm::vec2 transpose(mat1x2 a){
+    return glm::vec2(a.x, a.y);
+}
+
+inline mat1x3 transpose(glm::vec3 a){
+    return mat1x3(a.x, a.y, a.z);
+}
+
+inline glm::vec3 transpose(mat1x3 a){
+    return glm::vec3(a.x, a.y, a.z);
+}
+
+inline mat1x3 operator* (mat1x2 a, glm::mat2x3 b){
+    return mat1x3(a.x*b[0][0]+a.y*b[1][0], a.x*b[0][1]+a.y*b[1][1], a.x*b[0][2]+a.y*b[1][2]);
+}
+
+inline float operator* (glm::vec3 a, mat1x3 b){
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+}
 
 float func4(glm::vec2 m){
 
@@ -32,8 +72,7 @@ float func4(glm::vec2 m){
 
     return a;
 }
-
-glm::vec2 func56(glm::vec2 m){
+mat1x2 func56(glm::vec2 m){
     
     float x = m.x;
     float y = m.y;
@@ -48,13 +87,13 @@ glm::vec2 func56(glm::vec2 m){
     float dy0 = (y - y0) / (y1 - y0);
     float dy1 = (y1 - y) / (y1 - y0);
 
-    float ax = dy0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dy1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ax = dx1 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
+            dx0 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
 
-    float ay = dx0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dx1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ay = dy1 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
+            dy0 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
 
-    return glm::vec2(ax, ay);
+    return mat1x2(ax, ay);
 }
 
 glm::vec2 func8(glm::vec3 E, glm::vec2 S){
@@ -82,40 +121,42 @@ glm::mat2x3 func14(glm::vec3 E, glm::vec2 S){
 }
 
 glm::vec3 func12(glm::vec3 E){
+    glm::vec3 ans;
     for (size_t i = 0; i < POINTSSIZE; i++)
     {
+        if (points[i] == glm::vec2(0,0)){
+            continue;
+        }
+
         glm::vec2 pos = func8(E, points[i]);
 
-        glm::mat2x3 mat0 = func56(pos) * func14(E, points[i]);
-        glm::mat3x2 mat1;
-        mat1[0][0] = mat0[0][0];
-        mat1[0][1] = mat0[1][0];
-        mat1[1][0] = mat0[0][1];
-        mat1[1][1] = mat0[1][1];
-        mat1[2][0] = mat0[0][2];
-        mat1[2][1] = mat0[1][2];
+        mat1x2 mat56 = func56(pos);
+        glm::mat2x3 mat14 = func14(E, points[i]);
 
-        glm::mat2x2 mat2 = mat1 * mat0;
+        mat1x3 a = mat56 * mat14;
+        glm::vec3 b = transpose(a);
+        float h = b * a;
+        float hinv = 1/h;
 
-        glm::mat2x2 mat3 = glm::inverse(mat2);
-
-
+        float c = 1 - func4(pos);
+        glm::vec3 d = b * hinv * c;
+        ans += d;
     }
+    return ans;
 }
 
 int main(){
 
     mapData[index(0,0, MAPSIZE)] = 0;
     mapData[index(0,1, MAPSIZE)] = 1;
-    mapData[index(1,0, MAPSIZE)] = 0;
-    mapData[index(1,1, MAPSIZE)] = 0;
+    mapData[index(1,0, MAPSIZE)] = 1;
+    mapData[index(1,1, MAPSIZE)] = 1;
 
-    func4(glm::vec2(0.5, 0.5));
-    func56(glm::vec2(0, 0.5));
+    points[0] = glm::vec2(0, 1.1);
+    points[0] = glm::vec2(1, 0.1);
+    points[0] = glm::vec2(1, 1.1);
 
-    func14(glm::vec3(0,0,0),  glm::vec2(1,1));
-
-    func12(glm::vec3(0.2,0.7,1));
+    func12(glm::vec3(0,0,0));
 
     return 0;
 }
