@@ -1,6 +1,7 @@
-
+/*
 #include <glm/glm.hpp>
-#include <cmath>	
+#include <cmath>
+#include <iostream>	
 
 #define MAPSIZE 10
 #define POINTSSIZE 10
@@ -87,11 +88,11 @@ mat1x2 func56(glm::vec2 m){
     float dy0 = (y - y0) / (y1 - y0);
     float dy1 = (y1 - y) / (y1 - y0);
 
-    float ax = dx1 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dx0 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ax = dy0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
+            dy1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
 
-    float ay = dy1 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dy0 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ay = dx0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
+            dx1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
 
     return mat1x2(ax, ay);
 }
@@ -121,7 +122,7 @@ glm::mat2x3 func14(glm::vec3 E, glm::vec2 S){
 }
 
 glm::vec3 func12(glm::vec3 E){
-    glm::vec3 ans;
+    glm::vec3 ans(0,0,0);
     for (size_t i = 0; i < POINTSSIZE; i++)
     {
         if (points[i] == glm::vec2(0,0)){
@@ -152,11 +153,14 @@ int main(){
     mapData[index(1,0, MAPSIZE)] = 1;
     mapData[index(1,1, MAPSIZE)] = 1;
 
-    points[0] = glm::vec2(0, 1.1);
-    points[0] = glm::vec2(1, 0.1);
-    points[0] = glm::vec2(1, 1.1);
+    points[0] = glm::vec2(0.11, 1.1);
+    points[0] = glm::vec2(1.1, 0.1);
+    points[0] = glm::vec2(1.1, 1.1);
 
-    func12(glm::vec3(0,0,0));
+    glm::vec3 a = func12(glm::vec3(0,0,0));
+    std::cout << a.x << "\n" << a.y << "\n" << a.z << "\n";
 
     return 0;
 }
+
+*/
