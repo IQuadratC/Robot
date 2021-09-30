@@ -1,17 +1,15 @@
-#include "slamMath.h"
+#define _USE_MATH_DEFINES
 
-#include <glm/glm.hpp>
+#include "slamMath.h"
+#include "slamMap.h"
+
 #include <cmath>
 #include <iostream>	
+#include <math.h>
 
-#define MAPSIZE 10
-#define POINTSSIZE 10
+
 
 inline int index(int x,int y, int size) { return x + (size * y);}
-
-float mapData[MAPSIZE * MAPSIZE];
-
-glm::vec2 points[POINTSSIZE];
 
 struct mat1x2
 { 
@@ -69,8 +67,8 @@ float func4(glm::vec2 m){
     float dy0 = (y - y0) / (y1 - y0);
     float dy1 = (y1 - y) / (y1 - y0);
     
-    float a = dy0 * (dx0 * mapData[index(x1, y1, MAPSIZE)] + dx1 * mapData[index(x0, y1, MAPSIZE)]) +
-            dy1 * (dx0 * mapData[index(x1, y0, MAPSIZE)] + dx1 * mapData[index(x0, y0, MAPSIZE)]);
+    float a = dy0 * (dx0 * GetMap(x1, y1, 0) + dx1 * GetMap(x0, y1, 0)) +
+            dy1 * (dx0 * GetMap(x1, y0, 0)  + dx1 * GetMap(x0, y0, 0));
 
     return a;
 }
@@ -89,11 +87,11 @@ mat1x2 func56(glm::vec2 m){
     float dy0 = (y - y0) / (y1 - y0);
     float dy1 = (y1 - y) / (y1 - y0);
 
-    float ax = dy0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dy1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ax = dy0 * (GetMap(x1, y1, 0) - GetMap(x0, y1, 0)) + 
+            dy1 * (GetMap(x1, y0, 0) - GetMap(x0, y0, 0));
 
-    float ay = dx0 * (mapData[index(x1, y1, MAPSIZE)] - mapData[index(x0, y1, MAPSIZE)]) + 
-            dx1 * (mapData[index(x1, y0, MAPSIZE)] - mapData[index(x0, y0, MAPSIZE)]);
+    float ay = dx0 * (GetMap(x1, y1, 0) - GetMap(x0, y1, 0) ) + 
+            dx1 * (GetMap(x1, y0, 0) - GetMap(x0, y0, 0));
 
     return mat1x2(ax, ay);
 }
@@ -122,9 +120,9 @@ glm::mat2x3 func14(glm::vec3 E, glm::vec2 S){
     return matrix;
 }
 
-glm::vec3 func12(glm::vec3 E){
+glm::vec3 func12(glm::vec3 E, glm::vec2 points[], int pointsSize){
     glm::vec3 ans(0,0,0);
-    for (size_t i = 0; i < POINTSSIZE; i++)
+    for (size_t i = 0; i < pointsSize; i++)
     {
         if (points[i] == glm::vec2(0,0)){
             continue;
@@ -145,4 +143,9 @@ glm::vec3 func12(glm::vec3 E){
         ans += d;
     }
     return ans;
+}
+
+glm::vec2 polarToCart(float angle, float distance) {
+    return glm::vec2(sin(angle * M_PI / 180) * distance,
+                    cos(angle * M_PI / 180) * distance);
 }
