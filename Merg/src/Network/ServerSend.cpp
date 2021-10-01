@@ -84,15 +84,18 @@ void ServerSend::ServerGetSimulatedLidarData(uint8_t client){
     Logger->info("[{0}] request Lidar Data", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::serverGetSimulatedLidarData);
-
+    
     server->SendTCPData(client, packet);
 }
 
-void ServerSend::ServertSLAMMap(uint8_t client){
+void ServerSend::ServertSLAMMap(uint8_t client, uint8_t data[], int length){
 
     Logger->info("[{0}] request SLAM Map", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
+
+    packet->Write(length);
+    packet->Write(data, length);
 
     server->SendUDPData(client, packet);
 }
