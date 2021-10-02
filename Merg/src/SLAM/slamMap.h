@@ -4,6 +4,8 @@
 
 #define MAPSIZE 2048
 #define MAPLEVELS 10
+#define MAPINTERVALL 1
+
 
 void InitMap();
 

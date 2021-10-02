@@ -69,14 +69,14 @@ void Server::HandelData(uint8_t data[], size_t lengtharray, uint8_t client){
     int length = packet->ReadInt32();
     if (length + 4 != lengtharray)
     {
-        //TODO Error
+        Logger->error("HandelData err 1");
         return;
     }
     uint8_t clientId = packet->ReadByte();
 
     if (clientId == 0 || client != 0 && serverClients[client].id != clientId)
     {
-        //TODO Error
+        Logger->error("HandelData err 2");
         return;
     } 
     if(clientId != 0 && client == 0)

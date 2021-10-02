@@ -23,6 +23,7 @@ struct ServerClient
     bool clientChatSupport = false;
     bool clientLidarSupport = false;
     bool clientLidarSimSupport = false;
+    bool clientSLAMSupport = false;
 };
 
 class Server{
@@ -45,6 +46,7 @@ public:
     bool serverChatSupport = false;
     bool serverLidarSupport = false;
     bool serverLidarSimSupport = true;
+    bool serverSLAMSupport = true;
 
     Server();
     ~Server();

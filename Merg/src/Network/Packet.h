@@ -39,7 +39,7 @@ public:
 
 private:
     std::vector<uint8_t> buffer;
-    int readPos;
+    int readPos = 0;
 
 };
 

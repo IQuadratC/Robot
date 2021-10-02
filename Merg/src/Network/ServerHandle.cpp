@@ -21,32 +21,56 @@ void ServerHandle::DebugMessage(uint8_t client, Packet* packet)
 
 void ServerHandle::ClientSettings(uint8_t client, Packet* packet)
 {
-    std::string version = packet->ReadString();
+    std::stringstream version(packet->ReadString());
+    std::string segment;
+    std::vector<std::string> versions;
 
-    if(version == "1.1"){
-        server->serverClients[client].clientUDPSupport = packet->ReadBool();
-        server->serverClients[client].clientCamSupport = packet->ReadBool();
-        server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
-        server->serverClients[client].clientChatSupport = packet->ReadBool();
-        server->serverClients[client].clientLidarSupport = packet->ReadBool();
-    }else if(version == "1.2"){
-        server->serverClients[client].clientUDPSupport = packet->ReadBool();
-        server->serverClients[client].clientCamSupport = packet->ReadBool();
-        server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
-        server->serverClients[client].clientChatSupport = packet->ReadBool();
-        server->serverClients[client].clientLidarSupport = packet->ReadBool();
-        server->serverClients[client].clientLidarSimSupport = packet->ReadBool();
+    while(std::getline(version, segment, ','))
+    {
+        versions.push_back(segment);
     }
 
+    for (size_t i = versions.size(); i > 0; i--)
+    {
+        if(versions[i] == "1.3"){
+            server->serverClients[client].clientUDPSupport = packet->ReadBool();
+            server->serverClients[client].clientCamSupport = packet->ReadBool();
+            server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
+            server->serverClients[client].clientChatSupport = packet->ReadBool();
+            server->serverClients[client].clientLidarSupport = packet->ReadBool();
+            server->serverClients[client].clientLidarSimSupport = packet->ReadBool();
+            server->serverClients[client].clientSLAMSupport = packet->ReadBool();
+            break;
+        }
+        else if(versions[i] == "1.2"){
+            server->serverClients[client].clientUDPSupport = packet->ReadBool();
+            server->serverClients[client].clientCamSupport = packet->ReadBool();
+            server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
+            server->serverClients[client].clientChatSupport = packet->ReadBool();
+            server->serverClients[client].clientLidarSupport = packet->ReadBool();
+            server->serverClients[client].clientLidarSimSupport = packet->ReadBool();
+            break;
+        }
+        else if(versions[i] == "1.1"){
+            server->serverClients[client].clientUDPSupport = packet->ReadBool();
+            server->serverClients[client].clientCamSupport = packet->ReadBool();
+            server->serverClients[client].clientJoyStickSupport = packet->ReadBool();
+            server->serverClients[client].clientChatSupport = packet->ReadBool();
+            server->serverClients[client].clientLidarSupport = packet->ReadBool();
+            break;
+        }
+    }
+    
     std::stringstream ss;
     ss << "[" << (int)client << "] recived client settings:" <<
-    "\nVersion " << version <<
+    "\nVersion " << version.str() <<
     "\nUDP " << server->serverClients[client].clientUDPSupport <<
     "\nCam " << server->serverClients[client].clientCamSupport <<
     "\nJoystick " << server->serverClients[client].clientJoyStickSupport <<
     "\nChat " << server->serverClients[client].clientChatSupport <<
     "\nLidar " << server->serverClients[client].clientLidarSupport <<
-    "\nLidarSim " << server->serverClients[client].clientLidarSimSupport;
+    "\nLidarSim " << server->serverClients[client].clientLidarSimSupport <<
+    "\nSLAMMap " << server->serverClients[client].clientSLAMSupport;
 
     Logger->info(ss.str().c_str());
 

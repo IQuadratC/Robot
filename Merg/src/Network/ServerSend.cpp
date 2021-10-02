@@ -1,6 +1,7 @@
 #include"ServerSend.h"
 #include "Server.h"
 #include "../SLAM/slam.h"
+#include "../SLAM/slamMap.h"
 
 ServerSend::ServerSend(Server *server) : server(server)
 {
@@ -20,7 +21,7 @@ void ServerSend::DebugMessage(std::string message){
 
 void ServerSend::ServerSettings(uint8_t client){
 
-    std::string version = "1.2";
+    std::string version = "1.1,1.2,1.3";
 
     std::stringstream ss;
     ss << "[" << (int)client << "] sending settings:" <<
@@ -30,7 +31,12 @@ void ServerSend::ServerSettings(uint8_t client){
     "\nJoystick " << server->serverJoyStickSupport <<
     "\nChat " << server->serverChatSupport <<
     "\nLidar " << server->serverLidarSupport <<
-    "\nLidarSim " << server->serverLidarSimSupport;
+    "\nLidarSim " << server->serverLidarSimSupport <<
+    "\nSLAMMap " << server->serverSLAMSupport <<
+    "\nSLAMMapSize " << MAPSIZE <<
+    "\nSLAMMapIntervall " << MAPINTERVALL;
+
+    Logger->info(ss.str().c_str());
 
     Packet* packet = new Packet((uint8_t) Packets::serverSettings);
     packet->Write(client);
@@ -42,6 +48,9 @@ void ServerSend::ServerSettings(uint8_t client){
     packet->Write(server->serverChatSupport);
     packet->Write(server->serverLidarSupport);
     packet->Write(server->serverLidarSimSupport);
+    packet->Write(server->serverSLAMSupport);
+    packet->Write(MAPSIZE);
+    packet->Write(MAPINTERVALL);
 
     server->SendTCPData(client, packet);
 }
