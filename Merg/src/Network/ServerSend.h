@@ -17,6 +17,7 @@ public:
     void ServerUDPConnection(uint8_t client, bool recived);
 
     void ServertSLAMMap(uint8_t client, uint8_t data[], int length);
+    void ServertSLAMMapPart(uint8_t client, uint8_t data[], int startIndex, int endIndex);
     void ServerPosition(uint8_t client);
 
     void ServerGetSimulatedLidarData(uint8_t client);

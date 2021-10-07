@@ -59,6 +59,7 @@ clientLidarMode = 50,  // Client requset to start or stop Lidar sensor (int) 1 =
 serverLidarStatus = 51, // Status of the Lidar 1 = on, 2 = off
 clientGetSLAMMap = 52, // Empty
 servertSLAMMap = 53, // length (int), data (bytes)
+servertSLAMMapPart = 56, // startIndex (int), endIndex (int), data (bytes)
 
 clientGetPosition = 54, // Empty
 serverPosition = 55, // 

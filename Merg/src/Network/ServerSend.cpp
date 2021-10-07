@@ -21,7 +21,7 @@ void ServerSend::DebugMessage(std::string message){
 
 void ServerSend::ServerSettings(uint8_t client){
 
-    std::string version = "1.1,1.2,1.3";
+    std::string version = "1.1,1.2,1.3,1.4";
 
     std::stringstream ss;
     ss << "[" << (int)client << "] sending settings:" <<
@@ -97,14 +97,38 @@ void ServerSend::ServerGetSimulatedLidarData(uint8_t client){
     server->SendTCPData(client, packet);
 }
 
+#define SLAMMAPPARTSIZE 1024
+
 void ServerSend::ServertSLAMMap(uint8_t client, uint8_t data[], int length){
 
-    Logger->info("[{0}] request SLAM Map", (int)client);
+    Logger->info("[{0}] send SLAM Map", (int)client);
 
     Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
 
     packet->Write(length);
     packet->Write(data, length);
+
+    if (length > SLAMMAPPARTSIZE){
+        for (int start = 0; start < length; start += SLAMMAPPARTSIZE)
+        {
+            int end = start + SLAMMAPPARTSIZE;
+            ServertSLAMMapPart
+        }
+        
+    }
+
+    server->SendUDPData(client, packet);
+}
+
+void ServerSend::ServertSLAMMapPart(uint8_t client, uint8_t data[], int startIndex, int endIndex){
+
+    Logger->info("[{0}] send SLAM Map Part", (int)client);
+
+    Packet* packet = new Packet((uint8_t) Packets::servertSLAMMapPart);
+
+    packet->Write(startIndex);
+    packet->Write(endIndex);
+    packet->Write(data, endIndex - startIndex);
 
     server->SendUDPData(client, packet);
 }

@@ -9,7 +9,8 @@
 
 void InitMap();
 
-uint8_t* GetMap(int level);
+uint8_t* 
+GetMap(int level);
 uint8_t GetMap(int x,int y, int level);
 uint8_t GetMap(float x, float y, int level);
 uint8_t GetMap(glm::vec2 pos, int level);
