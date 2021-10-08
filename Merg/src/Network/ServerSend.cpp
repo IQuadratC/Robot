@@ -103,19 +103,20 @@ void ServerSend::ServertSLAMMap(uint8_t client, uint8_t data[], int length){
 
     Logger->info("[{0}] send SLAM Map", (int)client);
 
-    Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
-
-    packet->Write(length);
-    packet->Write(data, length);
-
     if (length > SLAMMAPPARTSIZE){
         for (int start = 0; start < length; start += SLAMMAPPARTSIZE)
         {
             int end = start + SLAMMAPPARTSIZE;
-            ServertSLAMMapPart
+            ServertSLAMMapPart(client, data + start, start, end);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
-        
+        return;
     }
+
+    Packet* packet = new Packet((uint8_t) Packets::servertSLAMMap);
+
+    packet->Write(length);
+    packet->Write(data, length);
 
     server->SendUDPData(client, packet);
 }

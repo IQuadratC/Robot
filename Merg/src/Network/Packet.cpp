@@ -197,12 +197,11 @@ int64_t Packet::ReadInt64()
 {
     if (buffer.size() > readPos)
     {
-
         int64_t value = int64_t(
-            buffer[readPos + 7] << 56 |
-            buffer[readPos + 6] << 48 |
-            buffer[readPos + 5] << 40 |
-            buffer[readPos + 4] << 32 |
+            (int64_t) buffer[readPos + 7] << 56 |
+            (int64_t) buffer[readPos + 6] << 48 |
+            (int64_t) buffer[readPos + 5] << 40 |
+            (int64_t) buffer[readPos + 4] << 32 |
             buffer[readPos + 3] << 24 |
             buffer[readPos + 2] << 16 |
             buffer[readPos + 1] << 8 |

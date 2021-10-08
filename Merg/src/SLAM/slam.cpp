@@ -27,7 +27,17 @@ void RunSLAM(Server* server)
     {
         if (server->serverClients[1].state == NetworkState::connected && server->serverClients[1].clientLidarSimSupport){
             server->serverSend->ServerGetSimulatedLidarData(1);
-            server->serverSend->ServertSLAMMap(1, GetMap(0), MAPSIZE * MAPSIZE);
+
+            uint8_t* data = GetMap(0);
+            int length = MAPSIZE * MAPSIZE;
+            for (size_t i = 0; i < length; i++)
+            {
+                if(data[i] == 1){
+                    Logger->error("1");
+                }
+            }
+    
+            server->serverSend->ServertSLAMMap(1, data, length);
         }
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
@@ -42,7 +52,7 @@ void LidarData(float* data)
         for (size_t i = 0; i < 360; i++)
         {
             glm::vec2 pos = polarToCart(i, lidarDataPolar[i]) + glm::vec2(MAPSIZE/2, MAPSIZE/2);
-            SetMap(pos, 0, 1);
+            SetMap(pos, 1, 1);
         }
     }
 }

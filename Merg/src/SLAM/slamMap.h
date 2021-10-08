@@ -1,16 +1,16 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <iostream>	
+#include <stdint.h>
 
-#define MAPSIZE 2048
-#define MAPLEVELS 10
-#define MAPINTERVALL 1
+#define CHUNKBOUNDS 256
 
+struct Chunk{
+    glm::vec2 pos;
+    uint8_t* data;
+}
 
-void InitMap();
-
-uint8_t* 
-GetMap(int level);
 uint8_t GetMap(int x,int y, int level);
 uint8_t GetMap(float x, float y, int level);
 uint8_t GetMap(glm::vec2 pos, int level);

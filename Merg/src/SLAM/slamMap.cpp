@@ -1,43 +1,37 @@
 #include "slamMap.h"
-#include <iostream>	
 
-uint8_t *maps;
-int mapSizes[MAPLEVELS];
-int mapYSizes[MAPLEVELS];
+#include <map>
+#include <iostream>
+#include <cassert>
 
-void InitMap(){
+std::map<glm::vec2, Chunk> chunks;
 
-    int sum = MAPSIZE * MAPSIZE;
-    mapSizes[0] = MAPSIZE * MAPSIZE;
-    mapYSizes[0] = MAPSIZE;
-
-    for (size_t i = 1; i < MAPLEVELS; i++)
-    {
-        int s = MAPSIZE/(2*i);
-        mapYSizes[i] = s;
-        mapSizes[i] = s * s;
-        sum += s * s;
-    }
-    
-    maps = new uint8_t[sum];
+inline glm::vec2 getChunkPos(glm::vec2 pos){
+    return glm::vec2((int)(pos.x/CHUNKBOUNDS), (int)(pos.y/CHUNKBOUNDS));
 }
 
-inline int index(int x,int y, int level) {
-    int index = 0;
-    for (size_t i = 0; i < level; i++)
-    {
-        index += mapSizes[i];
-    }
-    index += x + (mapYSizes[level] * y);
-    return index;
+inline Chunk newChunk(glm::vec2 pos){
+    Chunk chunk;
+    chunk.pos = pos;
+    chunk.data = new uint8_t[CHUNKBOUNDS*CHUNKBOUNDS];
+    return chunk;
 }
 
-uint8_t* GetMap(int level){
-    return maps;
+uint8_t Get(glm::vec2 pos){
+    glm::vec2 chunkPos = getChunkPos(pos);
+    Chunk chunk = chunks[chunkPos];
 }
 
+
+
+
+
+/*
 uint8_t GetMap(int x,int y, int level){
-    return maps[index(x, y, level)];
+    if (x < 0 || x >= MAPSIZE || y < 0 || y >= MAPSIZE){
+        return 0;
+    }
+    return maps[index(x / MAPINTERVALL, y / MAPINTERVALL, level)];
 }
 uint8_t GetMap(float x, float y, int level){
     GetMap((int) x, (int) y, level);
@@ -47,7 +41,10 @@ uint8_t GetMap(glm::vec2 pos, int level){
 }
 
 void SetMap(int x,int y, int level, uint8_t value){
-    int i = index(x, y, level);
+    if (x < 0 || x >= MAPSIZE || y < 0 || y >= MAPSIZE){
+        return;
+    }
+    int i = index(x / MAPINTERVALL, y / MAPINTERVALL, level);
     maps[i] = value;
 }
 
@@ -64,3 +61,4 @@ void GenLowerMaps(){
         
     }
 }
+*/
